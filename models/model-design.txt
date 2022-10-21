@@ -1,0 +1,28 @@
+EBook
+book_id: UUID
+chapters: [EBookChapter]
+author: String
+synopsis: String
+cover_image: Image
+
+EBookChapter
+chapter_id: UUID
+chapter_name: String
+chapter_contents: String
+book_id: UUID
+
+UserAccount
+username: String
+password: String
+auth_key: UUID
+
+UserProfile
+username: String
+first_name: String
+last_name: String
+email_id: String
+profile_image: Image
+public_account: Bool
+library: [EBook.book_id]
+published_works: [EBook.book_id]
+unpublished_works: [EBook.book_id]

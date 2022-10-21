@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^6.6.6",
+    "nodemon": "^2.0.20",
+    "uuid": "^9.0.0"
+  },
+  "name": "ionic-pen-api",
+  "description": "",
+  "version": "1.0.0",
+  "main": "api-router.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon api-router.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samay-1305/ionic-pen-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Samay-1305/ionic-pen-api/issues"
+  },
+  "homepage": "https://github.com/Samay-1305/ionic-pen-api#readme"
+}
