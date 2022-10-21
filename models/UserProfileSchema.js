@@ -47,6 +47,6 @@ const UserProfileSchema = mongoose.Schema({
       type: Array,
       default: []
     }
-  }, {collection : 'UserProfile'});
+}, {collection : 'UserProfile'});
 
 module.exports = UserProfileSchema;

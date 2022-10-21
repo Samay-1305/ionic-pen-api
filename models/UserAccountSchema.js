@@ -21,6 +21,6 @@ const UserAccountSchema = mongoose.Schema({
       unique: true,
       default: uuid.v1
     }
-  }, {collection : 'UserAccount'});
+}, {collection : 'UserAccount'});
 
 module.exports = UserAccountSchema;

@@ -16,4 +16,4 @@ app.get("/api/", (req, res) => {
 
 app.listen(port, () => {
     console.log(`Ionic-Pen-API app listening at http://${host}:${port}`);
-  });
+});
