@@ -69,6 +69,14 @@ app.get("/api/books/read/:id/", (req, res) => {
     })
 });
 
+app.get("/api/books/read/:id/next/", (req, res) => {
+    let auth_key = req.headers['auth-key'];
+    let book_id = req.params.id;
+    book.get_next_chapter(auth_key, book_id).then((chapter) => {
+        res.send(chapter);
+    })
+});
+
 app.listen(port, () => {
     console.log(`Ionic-Pen-API app listening at http://${host}:${port}`);
 });
