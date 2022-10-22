@@ -19,3 +19,9 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 [GET] `/api/books/read/:id/` => Read a bool based on the last saved position.
 
 [GET] `/api/books/read/:id/next/` => Read the next chapter of a book.
+
+[GET] `/api/library/` => Get all the books in a users library.
+
+[POST] `/api/library/add/` => Add a new book to a users library.
+
+[DELETE] `api/library/remove/:id/` => Remove a book from a users library.

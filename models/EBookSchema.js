@@ -23,6 +23,14 @@ const EBookSchema = mongoose.Schema({
   cover_image: {
     data: Buffer,
     contentType: String
+  },
+  reviews: {
+    type: Array,
+    default: []
+  },
+  likes: {
+    type: Array,
+    default: []
   }
 }, {collection : 'EBook'});
 

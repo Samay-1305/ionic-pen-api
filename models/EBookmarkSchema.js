@@ -12,7 +12,7 @@ const EBookmarkSchema = mongoose.Schema({
       type: String
     },
     char_index: { 
-      type: Integer
+      type: Number
     }
 }, {collection : 'EBookmark'});
 

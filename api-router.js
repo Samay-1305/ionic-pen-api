@@ -23,7 +23,7 @@ app.post("/api/login/", (req, res) => {
     auth.login(username, password).then((auth_key) => {
         res.send({
             "auth-key": auth_key
-        })
+        });
     });
 });
 
@@ -36,14 +36,14 @@ app.post("/api/signup/", (req, res) => {
     auth.sign_up(username, first_name, last_name, email_id, password).then((auth_key) => {
         res.send({
             "auth-key": auth_key
-        })
+        });
     });
 });
 
 app.get("/api/homepage/", (req, res) => {
     let auth_key = req.headers['auth-key'];
     home.homepage(auth_key).then((response) => {
-        res.send(response)
+        res.send(response);
     });
 });
 
@@ -61,12 +61,35 @@ app.get("/api/books/:id/", (req, res) => {
     });
 });
 
+app.get("/api/library/", (req, res) => {
+    let auth_key = req.headers['auth-key'];
+    book.get_library_books(auth_key).then((library) => {
+        res.send({"library": library});
+    });
+});
+
+app.post("/api/library/add/", (req, res) => {
+    let book_id = req.body.book_id;
+    let auth_key = req.headers['auth-key'];
+    book.add_to_library(auth_key, book_id).then(() => {
+        res.status(201).end();
+    });
+});
+
+app.delete("/api/library/remove/:id/", (req, res) => {
+    let book_id = req.body.book_id;
+    let auth_key = req.headers['auth-key'];
+    book.remove_from_library(auth_key, book_id).then(() => {
+        res.status(204).end();
+    });
+});
+
 app.get("/api/books/read/:id/", (req, res) => {
     let auth_key = req.headers['auth-key'];
     let book_id = req.params.id;
     book.read_book(auth_key, book_id).then((chapter) => {
         res.send(chapter);
-    })
+    });
 });
 
 app.get("/api/books/read/:id/next/", (req, res) => {
@@ -74,7 +97,7 @@ app.get("/api/books/read/:id/next/", (req, res) => {
     let book_id = req.params.id;
     book.get_next_chapter(auth_key, book_id).then((chapter) => {
         res.send(chapter);
-    })
+    });
 });
 
 app.listen(port, () => {

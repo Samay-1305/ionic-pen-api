@@ -186,6 +186,35 @@ async function getNextEBookChapter(auth_key, book_id) {
   }
 }
 
+async function addBookToLibrary(auth_key, book_id) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  let ebook = await EBookModel.findOne({"book_id": book_id});
+  if (ebook && !profile["library"].includes(book_id)) {
+    profile = await UserProfileModel.findOneAndUpdate(profile, {
+      "library": [...profile["library"], book_id]
+    });
+  }
+}
+
+async function removeBookFromLibrary(auth_key, book_id) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  let index = profile["library"].indexOf(book_id);
+  if (index > -1) {
+    profile["library"].splice(index, 1);
+    profile = await UserProfileModel.findOneAndUpdate({
+      "username": profile["username"]
+    }, {
+      "library": profile["library"]
+    });
+  }
+}
+
 module.exports = {
     getAuthKeyFromCredentials,
     createNewUserAccountAndProfile,
@@ -193,5 +222,7 @@ module.exports = {
     searchForKeyword,
     getEBook,
     getEBookChapter,
-    getNextEBookChapter
+    getNextEBookChapter,
+    addBookToLibrary,
+    removeBookFromLibrary
 }
