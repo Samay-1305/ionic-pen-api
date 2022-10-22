@@ -5,8 +5,9 @@ const auth = require('./systems/auth-system');
 const home = require('./systems/homepage-system');
 const book = require('./systems/reading-system');
 
-const host = "127.0.0.1";
-const port = 3200;
+const config = require('./config');
+
+const { api: { host, port, name }} = config;
 
 const app = express();
 app.use(cors());

@@ -6,10 +6,11 @@ const EBookSchema = require('./EBookSchema');
 const EBookChapterSchema = require('./EBookChapterSchema');
 const EBookmarkSchema = require('./EBookmarkSchema');
 
-let host = "127.0.0.1";
-let port = 27017;
+const config = require('../config');
 
-const DATABASE_NAME = "IonicPenDB";
+const { database: { host, port, name }} = config;
+
+const DATABASE_NAME = name;
 const DATABASE_URL = `mongodb://${host}:${port}/${DATABASE_NAME}`;
 
 let dbConnection = null;
