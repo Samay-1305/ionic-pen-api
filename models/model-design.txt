@@ -26,3 +26,8 @@ public_account: Bool
 library: [EBook.book_id]
 published_works: [EBook.book_id]
 unpublished_works: [EBook.book_id]
+
+EBookmark
+book_id: UUID
+chapter_id: UUID
+char_position: Integer

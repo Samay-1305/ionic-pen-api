@@ -7,6 +7,9 @@ const EBookSchema = mongoose.Schema({
     unique: true,
     default: uuid.v1
   },
+  book_title: {
+    type: String
+  },
   chapters: { 
     type: Array,
     default: []
@@ -21,6 +24,6 @@ const EBookSchema = mongoose.Schema({
     data: Buffer,
     contentType: String
   }
-}, {collection : 'EBookSchema'});
+}, {collection : 'EBook'});
 
 module.exports = EBookSchema;

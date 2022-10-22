@@ -16,6 +16,6 @@ const EBookChapterSchema = mongoose.Schema({
     book_id: {
       type: String
     }
-}, {collection : 'EBookChapterSchema'});
+}, {collection : 'EBookChapter'});
 
 module.exports = EBookChapterSchema;

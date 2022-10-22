@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const auth = require('./systems/auth-system');
 const home = require('./systems/homepage-system');
-const { response } = require('express');
+const book = require('./systems/reading-system');
 
 const host = "127.0.0.1";
 const port = 3200;
@@ -40,11 +40,33 @@ app.post("/api/signup/", (req, res) => {
     });
 });
 
-app.post("/api/homepage/", (req, res) => {
-    let auth_key = req.body['auth-key'];
+app.get("/api/homepage/", (req, res) => {
+    let auth_key = req.headers['auth-key'];
     home.homepage(auth_key).then((response) => {
         res.send(response)
     });
+});
+
+app.get("/api/search/", (req, res) => {
+    let query = req.query['q'];
+    home.search(query).then((response) => {
+        res.send(response);
+    });
+});
+
+app.get("/api/books/:id/", (req, res) => {
+    let book_id = req.params.id;
+    book.get_book_info(book_id).then((ebook) => {
+        res.send(ebook);
+    });
+});
+
+app.get("/api/books/read/:id/", (req, res) => {
+    let auth_key = req.headers['auth-key'];
+    let book_id = req.params.id;
+    book.read_book(auth_key, book_id).then((chapter) => {
+        res.send(chapter);
+    })
 });
 
 app.listen(port, () => {
