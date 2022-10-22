@@ -29,7 +29,7 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 
 ## Database Models:
 
-##### EBook
+### EBook
 
 book_id: UUID
 
@@ -46,7 +46,7 @@ reviews:[JSON]
 likes: [UserProfile.username]
 
 
-##### EBookChapter
+### EBookChapter
 
 chapter_id: UUID
 
@@ -57,7 +57,7 @@ chapter_contents: String
 book_id: EBook.book_id
 
 
-##### UserAccount
+### UserAccount
 
 username: UserProfile.username
 
@@ -66,7 +66,7 @@ password: String
 auth_key: UUID
 
 
-##### UserProfile
+### UserProfile
 
 username: String
 
@@ -87,7 +87,7 @@ published_works: [EBook.book_id]
 unpublished_works: [EBook.book_id]
 
 
-##### EBookmark
+### EBookmark
 
 book_id: EBook.book_id
 
