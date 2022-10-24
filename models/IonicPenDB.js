@@ -106,7 +106,9 @@ async function searchForKeyword(query) {
       if (profile['username'].includes(keyWord) ||
           profile['first_name'].toLowerCase().includes(keyWord) || 
           profile['last_name'].toLowerCase().includes(keyWord)) {
-        response["users"].push(profile);
+        if (profile["public_account"]) {
+          response["users"].push(profile);
+        }
       }
     }
     ebooks = EBookModel.find({});
@@ -116,7 +118,9 @@ async function searchForKeyword(query) {
       if (ebook['book_title'].includes(keyWord) ||
           ebook['author'].toLowerCase().includes(keyWord) || 
           ebook['synopsis'].toLowerCase().includes(keyWord)) {
-        response["books"].push(ebook);
+        if (ebook["published"]) {
+          response["books"].push(ebook);
+        }
       }
     }
   } catch {
