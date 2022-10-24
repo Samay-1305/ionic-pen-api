@@ -18,6 +18,8 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [POST] `/api/books/new/` => Create a new book.
 <br/>
+[DELETE] `/api/books/:id/` => Delete a book.
+<br/>
 [POST] `/api/books/:id/publish/` => Publish a book.
 <br/>
 [POST] `/api/books/:id/publish/` => Unpublish a book.

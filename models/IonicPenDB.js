@@ -226,14 +226,15 @@ async function deleteBookFromDatabase(auth_key, book_id) {
   let book = getEBook(book_id);
   let del_ind = -1;
   if (book['author'] == profile['username']) {
-    del_ind = profile["published_works"];
+    del_ind = profile["works"];
     if (del_ind > -1) {
-      profile["published_works"].splice(del_ind, 1);
+      profile["works"].splice(del_ind, 1);
     }
-    del_ind = profile["unpublished_works"];
-    if (del_ind > -1) {
-      profile["unpublished_works"].splice(del_ind, 1);
-    }
+    await UserProfileModel.findOneAndUpdate({
+      "username": profile["username"]
+    }, {
+      "works": profile["works"]
+    });
     await EBookModel.deleteOne({"book_id": book_id});
     /* Delete and remove from users works */
 

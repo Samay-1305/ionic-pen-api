@@ -113,7 +113,7 @@ app.post("/api/books/:id/unpublish/", (req, res) => {
   })
 })
 
-app.delete("/api/books/:id/publish/", (req, res) => {
+app.delete("/api/books/:id/", (req, res) => {
   let auth_key = req.headers['auth-key'];
   let book_id = req.params.id;
   book.delete_book(auth_key, book_id).then(() => {
