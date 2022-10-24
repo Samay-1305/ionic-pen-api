@@ -202,7 +202,6 @@ async function addBookToLibrary(auth_key, book_id) {
 
 async function removeBookFromLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   let index = profile["library"].indexOf(book_id);
@@ -216,6 +215,54 @@ async function removeBookFromLibrary(auth_key, book_id) {
   }
 }
 
+async function deleteBookFromDatabase(auth_key, book_id) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  let book = getEBook(book_id);
+  let del_ind = -1;
+  if (book['author'] == profile['username']) {
+    del_ind = profile["published_works"];
+    if (del_ind > -1) {
+      profile["published_works"].splice(del_ind, 1);
+    }
+    del_ind = profile["unpublished_works"];
+    if (del_ind > -1) {
+      profile["unpublished_works"].splice(del_ind, 1);
+    }
+    await EBookModel.deleteOne({"book_id": book_id});
+    /* Delete and remove from users works */
+
+  }
+}
+
+async function createNewBook(auth_key, book_title, synopsis, cover_image) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  ebook_data = {
+    "author": profile["username"],
+    "book_title": book_title
+  };
+  if (synopsis) {
+    ebook_data["synopsis"] = synopsis;
+  }
+  if (cover_image) {
+    ebook_data["cover-image"] = cover_image;
+  }
+  let book = new EBookModel(ebook_data);
+  await book.save();
+  return book["book_id"];
+}
+
+async function publishExisitingBook(auth_key, book_id) {
+
+}
+
+async function unpublishExistingBook(auth_key, book_id) {
+
+}
+
 module.exports = {
     getAuthKeyFromCredentials,
     createNewUserAccountAndProfile,
@@ -225,5 +272,9 @@ module.exports = {
     getEBookChapter,
     getNextEBookChapter,
     addBookToLibrary,
-    removeBookFromLibrary
+    removeBookFromLibrary,
+    deleteBookFromDatabase,
+    publishExisitingBook,
+    unpublishExistingBook,
+    createNewBook
 }

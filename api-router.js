@@ -55,13 +55,6 @@ app.get("/api/search/", (req, res) => {
   });
 });
 
-app.get("/api/books/:id/", (req, res) => {
-  let book_id = req.params.id;
-  book.get_book_info(book_id).then((ebook) => {
-    res.send(ebook);
-  });
-});
-
 app.get("/api/library/", (req, res) => {
   let auth_key = req.headers['auth-key'];
   book.get_library_books(auth_key).then((library) => {
@@ -85,6 +78,49 @@ app.delete("/api/library/remove/:id/", (req, res) => {
   });
 });
 
+app.get("/api/books/:id/", (req, res) => {
+  let book_id = req.params.id;
+  book.get_book_info(book_id).then((ebook) => {
+    res.send(ebook);
+  });
+});
+
+app.post("/api/books/new/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let book_title = req.body["book_title"];
+  let synopsis = req.body["synopsis"];
+  let cover_image = req.body["cover_image"];
+  book.create_new_book(auth_key, book_title, synopsis, cover_image).then((book_id) => {
+    res.send({
+      "book_id": book_id
+    });
+  });
+})
+
+app.post("/api/books/:id/publish/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let book_id = req.params.id;
+  book.publish_book(auth_key, book_id).then(() => {
+    res.status(201).end();
+  });
+})
+
+app.post("/api/books/:id/unpublish/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let book_id = req.params.id;
+  book.unpublish_book(auth_key, book_id).then(() => {
+    res.status(201).end();
+  })
+})
+
+app.delete("/api/books/:id/publish/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let book_id = req.params.id;
+  book.delete_book(auth_key, book_id).then(() => {
+    res.status(204).end();
+  })
+})
+
 app.get("/api/books/read/:id/", (req, res) => {
   let auth_key = req.headers['auth-key'];
   let book_id = req.params.id;
@@ -98,6 +134,14 @@ app.get("/api/books/read/:id/next/", (req, res) => {
   let book_id = req.params.id;
   book.get_next_chapter(auth_key, book_id).then((chapter) => {
     res.send(chapter);
+  });
+});
+
+app.delete("/api/books/remove/:id/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let book_id = req.params.id;
+  book.remove_from_library(auth_key, book_id).then(() => {
+    res.status(204).end();
   });
 });
 

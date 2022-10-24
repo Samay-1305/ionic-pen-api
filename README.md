@@ -16,6 +16,8 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [GET] `/api/books/:id/` => Retrieve a specific books information.
 <br/>
+[POST] `/api/books/new/` => Create a new book.
+<br/>
 [GET] `/api/books/read/:id/` => Read a book based on the last saved position.
 <br/>
 [GET] `/api/books/read/:id/next/` => Read the next chapter of a book.
@@ -31,6 +33,8 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 
 ### EBook
 book_id: UUID
+<br/>
+book_title: String
 <br/>
 chapters: [EBookChapter.chapter_id]
 <br/>

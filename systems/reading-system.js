@@ -1,5 +1,22 @@
 const db = require('../models/IonicPenDB');
 
+async function create_new_book(auth_key, book_title, synopsis, cover_image) {
+  let book_id = await db.createNewBook(auth_key, book_title, synopsis, cover_image);
+  return book_id;
+}
+
+async function publish_book(auth_key, book_id) {
+  await db.publishExisitingBook(auth_key, book_id);
+}
+
+async function unpublish_book(auth_key, book_id) {
+  await db.unpublishExisitingBook(auth_key, book_id);
+}
+
+async function delete_book(auth_key, book_id) {
+  await db.deleteBookFromDatabase(auth_key, book_id);
+}
+
 async function get_book_info(book_id) {
   let ebook = await db.getEBook(book_id);
   return ebook;
@@ -37,6 +54,10 @@ async function remove_from_library(auth_key, book_id) {
 }
 
 module.exports = {
+  create_new_book,
+  publish_book, 
+  unpublish_book,
+  delete_book,
   read_book,
   get_book_info,
   get_next_chapter,
