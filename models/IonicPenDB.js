@@ -239,6 +239,7 @@ async function deleteBookFromDatabase(auth_key, book_id) {
 async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
+  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   ebook_data = {
     "author": profile["username"],
@@ -252,15 +253,42 @@ async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   }
   let book = new EBookModel(ebook_data);
   await book.save();
+  let works = profile["works"];
+  works.push(book["book_id"]);
+  await UserProfileModel.findOneAndUpdate({
+    "username": profile["username"]
+  }, {
+    "works": works
+  });
   return book["book_id"];
 }
 
 async function publishExisitingBook(auth_key, book_id) {
-
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  let book = getEBook(book_id);
+  if (book["author"] === profile["username"]) {
+    await EBookModel.findOneAndUpdate({
+      "book_id": book_id
+    }, {
+      "published": true
+    });
+  }
 }
 
 async function unpublishExistingBook(auth_key, book_id) {
-
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  let book = getEBook(book_id);
+  if (book["author"] === profile["username"]) {
+    await EBookModel.findOneAndUpdate({
+      "book_id": book_id
+    }, {
+      "published": false
+    });
+  }
 }
 
 module.exports = {

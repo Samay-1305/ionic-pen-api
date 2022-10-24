@@ -44,6 +44,8 @@ synopsis: String
 <br/>
 cover_image: Image
 <br/>
+published: Boolean
+<br/>
 reviews:[JSON]
 <br/>
 likes: [UserProfile.username]
@@ -78,13 +80,11 @@ email_id: String
 <br/>
 profile_image: Image
 <br/>
-public_account: Bool
+public_account: Boolean
 <br/>
 library: [EBook.book_id]
 <br/>
-published_works: [EBook.book_id]
-<br/>
-unpublished_works: [EBook.book_id]
+works: [EBook.book_id]
 <br/>
 
 ### EBookmark

@@ -24,6 +24,10 @@ const EBookSchema = mongoose.Schema({
     data: Buffer,
     contentType: String
   },
+  published: {
+    type: Boolean,
+    default: false
+  },
   reviews: {
     type: Array,
     default: []

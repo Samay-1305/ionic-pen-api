@@ -38,11 +38,7 @@ const UserProfileSchema = mongoose.Schema({
     type: Array,
     default: []
   },
-  published_works: {
-    type: Array,
-    default: []
-  },
-  unpublished_works: {
+  works: {
     type: Array,
     default: []
   }
