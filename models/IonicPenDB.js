@@ -296,6 +296,13 @@ async function unpublishExistingBook(auth_key, book_id) {
   }
 }
 
+async function getAllBooks() {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  let books = await EBookModel.find({});
+  return books;
+}
+
 module.exports = {
     getAuthKeyFromCredentials,
     createNewUserAccountAndProfile,
@@ -309,5 +316,6 @@ module.exports = {
     deleteBookFromDatabase,
     publishExisitingBook,
     unpublishExistingBook,
-    createNewBook
+    createNewBook,
+    getAllBooks
 }

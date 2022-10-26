@@ -4,7 +4,12 @@ async function homepage(auth_key) {
   let response = {}
   if (auth_key) {
     try {
-      response = await db.getUserProfileFromAuthKey(auth_key);
+      response['profile'] = await db.getUserProfileFromAuthKey(auth_key);
+      response['books'] = await db.getAllBooks();
+      response['library'] = []
+      for (let book_id in response['profile']['library']) {
+        response['library'].push(await db.getEBook(book_id));
+      }
     } catch {
 
     }

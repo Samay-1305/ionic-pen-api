@@ -32,7 +32,7 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [POST] `/api/library/add/` => Add a new book to a users library.
 <br/>
-[DELETE] `api/library/remove/:id/` => Remove a book from a users library.
+[DELETE] `/api/library/remove/:id/` => Remove a book from a users library.
 
 
 ## Database Models:
