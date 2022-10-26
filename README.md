@@ -22,7 +22,7 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [POST] `/api/books/:id/publish/` => Publish a book.
 <br/>
-[POST] `/api/books/:id/publish/` => Unpublish a book.
+[POST] `/api/books/:id/unpublish/` => Unpublish a book.
 <br/>
 [GET] `/api/books/read/:id/` => Read a book based on the last saved position.
 <br/>
