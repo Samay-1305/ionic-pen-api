@@ -27,25 +27,44 @@ function getDatabaseConnection() {
 
 async function getAuthKeyFromCredentials(username, password) {
   const conn = getDatabaseConnection();
-  const UserAccountModel = conn.model("UserAccount", UserAccountSchema);
+  const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
   if (username && password) {
     let account = await UserAccountModel.findOne({
       'username': username
     });
     if (account) {
-      if (password === account['password']) {
-        return account['auth_key'];
+      if (password === account.password) {
+        return account.auth_key;
       }
-      throw Error("Invalid Password")
+      throw Error('Invalid Password');
     }
-    throw Error("Invalid Username");
+    throw Error('Invalid Username');
   }
+}
+
+async function getUserProfileFromAuthKey(auth_key) {
+  const conn = getDatabaseConnection();
+  const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
+  let account = null;
+  let profile = null;
+  if (auth_key) {
+    account = await UserAccountModel.findOne({
+      'auth_key': auth_key
+    });
+    if (account) {
+      profile = await UserProfileModel.findOne({
+        'username': account.username
+      });
+    }
+  }
+  return profile;
 }
 
 async function createNewUserAccountAndProfile(username, first_name, last_name, email_id, password) {
   const conn = getDatabaseConnection();
-  const UserAccountModel = conn.model("UserAccount", UserAccountSchema);
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   let account = null;
   let profile = null;
   account = new UserAccountModel({
@@ -60,39 +79,17 @@ async function createNewUserAccountAndProfile(username, first_name, last_name, e
   });
   await profile.save();
   await account.save();
-  return account['auth_key'];
-}
-
-async function getUserProfileFromAuthKey(auth_key) {
-  const conn = getDatabaseConnection();
-  const UserAccountModel = conn.model("UserAccount", UserAccountSchema);
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  let account = null;
-  let profile = null;
-  if (auth_key) {
-    account = await UserAccountModel.findOne({
-      'auth_key': auth_key
-    });
-    if (account) {
-      profile = await UserProfileModel.findOne({
-        'username': account['username']
-      })
-      if (profile) {
-        return profile;
-      }
-    }
-  }
-  return profile;
+  return account.auth_key;
 }
 
 async function searchForKeyword(query) {
   const conn = getDatabaseConnection();
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  const EBookModel = conn.model("EBook", EBookSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
+  const EBookModel = conn.model('EBook', EBookSchema);
   const keyWord = query.toLowerCase();
   let response = {
-    "users": [],
-    "books": []
+    'users': [],
+    'books': []
   };
   let profiles = null;
   let profile = null;
@@ -103,11 +100,11 @@ async function searchForKeyword(query) {
     profile = null;
     for (let i=0; i<profiles.length; i++) {
       profile = profiles[i];
-      if (profile['username'].includes(keyWord) ||
-          profile['first_name'].toLowerCase().includes(keyWord) || 
-          profile['last_name'].toLowerCase().includes(keyWord)) {
-        if (profile["public_account"]) {
-          response["users"].push(profile);
+      if (profile.username.includes(keyWord) ||
+          profile.first_name.toLowerCase().includes(keyWord) || 
+          profile.last_name.toLowerCase().includes(keyWord)) {
+        if (profile.public_account) {
+          response['users'].push(profile);
         }
       }
     }
@@ -115,11 +112,11 @@ async function searchForKeyword(query) {
     ebook = null;
     for (let i=0; i<ebooks.length; i++) {
       ebook = ebooks[i];
-      if (ebook['book_title'].toLowerCase().includes(keyWord) ||
-          ebook['author'].toLowerCase().includes(keyWord) || 
-          ebook['synopsis'].toLowerCase().includes(keyWord)) {
-        if (ebook["published"]) {
-          response["books"].push(ebook);
+      if (ebook.book_title.toLowerCase().includes(keyWord) ||
+          ebook.author.toLowerCase().includes(keyWord) || 
+          ebook.synopsis.toLowerCase().includes(keyWord)) {
+        if (ebook.published) {
+          response['books'].push(ebook);
         }
       }
     }
@@ -131,203 +128,202 @@ async function searchForKeyword(query) {
 
 async function getEBook(book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
-  let ebook = await EBookModel.findOne({"book_id": book_id});
-  return ebook
+  const EBookModel = conn.model('EBook', EBookSchema);
+  let ebook = await EBookModel.findOne({'book_id': book_id});
+  return ebook;
 }
 
 async function getEBookChapter(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookmarkModel = conn.model("EBookmark", EBookmarkSchema);
-  const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
+  const EBookmarkModel = conn.model('EBookmark', EBookmarkSchema);
+  const EBookChapterModel = conn.model('EBookChapter', EBookChapterSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
-  let bookmark = await EBookmarkModel.findOne({"book_id": book_id, "username": profile["username"]});
+  let bookmark = await EBookmarkModel.findOne({'book_id': book_id, 'username': profile.username});
   if (!bookmark) {
     let ebook = await getEBook(book_id);
     let chapter_id = null;
-    if (ebook['chapters'].length > 0) {
-      chapter_id = ebook['chapters'][0];
+    if (ebook.chapters.length > 0) {
+      chapter_id = ebook.chapters[0];
     }
     bookmark = new EBookmarkModel({
       'book_id': book_id,
       'chapter_id': chapter_id,
-      'username': profile['username'],
+      'username': profile.username,
       'char_index': 0
     });
     await bookmark.save();
   }
-  let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark["chapter_id"]});
+  let eBookChapter = await EBookChapterModel.findOne({'chapter_id': bookmark['chapter_id']});
   return eBookChapter;
 }
 
 async function getNextEBookChapter(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookmarkModel = conn.model("EBookmark", EBookmarkSchema);
-  const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
+  const EBookmarkModel = conn.model('EBookmark', EBookmarkSchema);
+  const EBookChapterModel = conn.model('EBookChapter', EBookChapterSchema);
   let ebook = await getEBook(book_id);
   let profile = await getUserProfileFromAuthKey(auth_key);
-  let bookmark = await EBookmarkModel.findOne({"book_id": book_id, "username": profile["username"]});
+  let bookmark = await EBookmarkModel.findOne({'book_id': book_id, 'username': profile['username']});
   if (!bookmark) {
     return getEBookChapter(auth_key, book_id);  
   }
   let chapter_index = 0;
   for (; chapter_index<ebook.chapters.length; chapter_index++) {
-    if (ebook.chapters[chapter_index] == bookmark.chapter_id) {
+    if (ebook.chapters[chapter_index] === bookmark.chapter_id) {
       chapter_index++;
-      break
+      break;
     }
   }
   if (chapter_index < ebook.chapters.length) {
     await EBookmarkModel.findOneAndUpdate(bookmark, {
-      "chapter_id": ebook.chapters[chapter_index],
-      "char_index": 0
+      'chapter_id': ebook.chapters[chapter_index],
+      'char_index': 0
     });
-    let eBookChapter = await EBookChapterModel.findOne({"chapter_id": ebook.chapters[chapter_index]});
+    let eBookChapter = await EBookChapterModel.findOne({'chapter_id': ebook.chapters[chapter_index]});
     return eBookChapter;
   }
-  let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark.chapter_id});
+  let eBookChapter = await EBookChapterModel.findOne({'chapter_id': bookmark.chapter_id});
   return eBookChapter;
 }
 
 async function addBookToLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  const EBookModel = conn.model('EBook', EBookSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
-  let ebook = await EBookModel.findOne({"book_id": book_id});
-  if (ebook && !profile["library"].includes(book_id)) {
+  let ebook = await EBookModel.findOne({'book_id': book_id});
+  if (ebook && !profile.library.includes(book_id)) {
     profile = await UserProfileModel.findOneAndUpdate(profile, {
-      "library": [...profile["library"], book_id]
+      'library': [...profile.library, book_id]
     });
   }
 }
 
 async function removeBookFromLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
-  let index = profile["library"].indexOf(book_id);
+  let index = profile['library'].indexOf(book_id);
   if (index > -1) {
-    profile["library"].splice(index, 1);
+    profile['library'].splice(index, 1);
     profile = await UserProfileModel.findOneAndUpdate({
-      "username": profile["username"]
+      'username': profile['username']
     }, {
-      "library": profile["library"]
+      'library': profile['library']
     });
   }
 }
 
 async function deleteBookFromDatabase(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
+  const EBookModel = conn.model('EBook', EBookSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   let book = getEBook(book_id);
   let del_ind = -1;
-  if (book['author'] == profile['username']) {
-    del_ind = profile["works"];
+  if (book.author === profile.username) {
+    del_ind = profile.works;
     if (del_ind > -1) {
-      profile["works"].splice(del_ind, 1);
+      profile.works.splice(del_ind, 1);
     }
     await UserProfileModel.findOneAndUpdate({
-      "username": profile["username"]
+      'username': profile.username
     }, {
-      "works": profile["works"]
+      'works': profile.works
     });
-    await EBookModel.deleteOne({"book_id": book_id});
-    /* Delete and remove from users works */
-
+    await EBookModel.deleteOne({'book_id': book_id});
   }
 }
 
-async function createNewBook(auth_key, book_title, synopsis, cover_image) {
+async function getAllBooks() {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
-  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
-  ebook_data = {
-    "author": profile["username"],
-    "book_title": book_title
-  };
-  if (synopsis) {
-    ebook_data["synopsis"] = synopsis;
-  }
-  if (cover_image) {
-    ebook_data["cover-image"] = cover_image;
-  }
-  let book = new EBookModel(ebook_data);
-  await book.save();
-  let works = profile["works"];
-  works.push(book["book_id"]);
-  await UserProfileModel.findOneAndUpdate({
-    "username": profile["username"]
-  }, {
-    "works": works
-  });
-  return book["book_id"];
-}
-
-async function createNewChapter(auth_key, book_id, title, contents) {
-  const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
-  const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
-  let profile = await getUserProfileFromAuthKey(auth_key);
-  let chapter_data = {
-    "chapter_name": title,
-    "chapter_contents": contents,
-    "book_id": book_id
-  };
-  let book = await getEBook(book_id);
-    if (book["author"] == profile["username"]) {
-    let chapter = new EBookChapterModel(chapter_data);
-    await chapter.save();
-    book["chapters"].push(chapter["chapter_id"]);
-    await EBookModel.findOneAndUpdate({
-      "book_id": book_id
-    }, {
-      "chapters": book["chapters"]
-    });
-  }
+  const EBookModel = conn.model('EBook', EBookSchema);
+  let books = await EBookModel.find({});
+  return books;
 }
 
 async function publishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
+  const EBookModel = conn.model('EBook', EBookSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   let book = getEBook(book_id);
-  if (book["author"] === profile["username"]) {
+  if (book.author === profile.username) {
     await EBookModel.findOneAndUpdate({
-      "book_id": book_id
+      'book_id': book_id
     }, {
-      "published": true
+      'published': true
     });
   }
 }
 
 async function unpublishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
+  const EBookModel = conn.model('EBook', EBookSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   let book = getEBook(book_id);
-  if (book["author"] === profile["username"]) {
+  if (book.author === profile.username) {
     await EBookModel.findOneAndUpdate({
-      "book_id": book_id
+      'book_id': book_id
     }, {
-      "published": false
+      'published': false
     });
   }
 }
 
-async function getAllBooks() {
+
+async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   const conn = getDatabaseConnection();
-  const EBookModel = conn.model("EBook", EBookSchema);
-  let books = await EBookModel.find({});
-  return books;
+  const EBookModel = conn.model('EBook', EBookSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
+  let profile = getUserProfileFromAuthKey(auth_key);
+  ebook_data = {
+    'author': profile.username,
+    'book_title': book_title
+  };
+  if (synopsis) {
+    ebook_data['synopsis'] = synopsis;
+  }
+  if (cover_image) {
+    ebook_data['cover-image'] = cover_image;
+  }
+  let book = new EBookModel(ebook_data);
+  await book.save();
+  let works = profile.works;
+  works.push(book.book_id);
+  await UserProfileModel.findOneAndUpdate({
+    'username': profile.username
+  }, {
+    'works': works
+  });
+  return book.book_id;
+}
+
+async function createNewChapter(auth_key, book_id, title, contents) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model('EBook', EBookSchema);
+  const EBookChapterModel = conn.model('EBookChapter', EBookChapterSchema);
+  let profile = await getUserProfileFromAuthKey(auth_key);
+  let chapter_data = {
+    'chapter_name': title,
+    'chapter_contents': contents,
+    'book_id': book_id
+  };
+  let book = await getEBook(book_id);
+  if (book.author === profile.username) {
+    let chapter = new EBookChapterModel(chapter_data);
+    await chapter.save();
+    book.chapters.push(chapter.chapter_id);
+    await EBookModel.findOneAndUpdate({
+      'book_id': book_id
+    }, {
+      'chapters': book['chapters']
+    });
+  }
 }
 
 module.exports = {
     getAuthKeyFromCredentials,
-    createNewUserAccountAndProfile,
     getUserProfileFromAuthKey,
+    createNewUserAccountAndProfile,
     searchForKeyword,
     getEBook,
     getEBookChapter,
@@ -335,9 +331,9 @@ module.exports = {
     addBookToLibrary,
     removeBookFromLibrary,
     deleteBookFromDatabase,
+    getAllBooks,
     publishExistingBook,
     unpublishExistingBook,
     createNewBook,
-    createNewChapter,
-    getAllBooks
+    createNewChapter
 }

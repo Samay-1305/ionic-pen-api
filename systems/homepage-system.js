@@ -13,40 +13,40 @@ function getUnique(arr, key) {
 }
 
 async function homepage(auth_key) {
-  let response = {}
+  let response = {};
   if (auth_key) {
     try {
       response['profile'] = await db.getUserProfileFromAuthKey(auth_key);
       response['books'] = await db.getAllBooks();
-      response['library'] = []
+      response['library'] = [];
       for (let book_id in response['profile']['library']) {
         response['library'].push(await db.getEBook(book_id));
       }
-    } catch {
-
+    } catch(err) {
+      console.log(err);
     }
   }
-  return response
+  return response;
 }
 
 async function search(query) {
   let response = {
-    "users": [],
-    "books": []
+    'users': [],
+    'books': []
   };
   try {
     const keywords = query.split(' ');
     for (let i = 0; i < keywords.length; i++) {
       result = await db.searchForKeyword(keywords[i]);
-      response["users"] = response["users"].concat(result["users"]);
-      response["books"] = response["books"].concat(result["books"]);
+      response['users'] = response['users'].concat(result['users']);
+      response['books'] = response['books'].concat(result['books']);
     }
-  } catch {
-
+  } catch(err) {
+    console.log(err);
   }
-  response["users"] = getUnique(response["users"]);
-  response["books"] = getUnique(response["books"]);
-  return response
+  response['users'] = getUnique(response['users']);
+  response['books'] = getUnique(response['books']);
+  return response;
 }
 
 module.exports = {

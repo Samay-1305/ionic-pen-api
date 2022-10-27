@@ -1,22 +1,12 @@
 const db = require('../models/IonicPenDB');
 
 async function login(username, password) {
-  let auth_key = null;
-  try {
-    auth_key = await db.getAuthKeyFromCredentials(username, password);
-  } catch {
-
-  }
+  let auth_key = await db.getAuthKeyFromCredentials(username, password);
   return auth_key;
 }
 
 async function sign_up(username, first_name, last_name, email_id, password) {
-  let auth_key = null;
-  try {
-    auth_key = await db.createNewUserAccountAndProfile(username, first_name, last_name, email_id, password);
-  } catch {
-
-  }
+  let auth_key = await db.createNewUserAccountAndProfile(username, first_name, last_name, email_id, password);
   return auth_key;
 }
 

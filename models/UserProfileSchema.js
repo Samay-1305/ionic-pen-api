@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const UserProfileSchema = mongoose.Schema({
   username: {
@@ -23,7 +23,7 @@ const UserProfileSchema = mongoose.Schema({
     unique: true,
     trim: true,
     validate(value) {
-      if (value.length < 5) throw new Error("Invalid email address.");
+      if (value.length < 5) throw new Error('Invalid email address.');
     }
   },
   profile_image: {
