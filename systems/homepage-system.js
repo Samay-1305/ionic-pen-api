@@ -1,5 +1,17 @@
 const db = require('../models/IonicPenDB');
 
+function getUnique(arr, key) {
+  let set = new Set();
+  let result = [];
+  for (let i=0; i<arr.length; i++) {
+    if (!set.has(arr[i][key])) {
+      result.push(arr[i]);
+      set.add(arr[i][key]);
+    }
+  }
+  return result;
+}
+
 async function homepage(auth_key) {
   let response = {}
   if (auth_key) {
@@ -25,15 +37,15 @@ async function search(query) {
   try {
     const keywords = query.split(' ');
     for (let i = 0; i < keywords.length; i++) {
-      console.log(1);
       result = await db.searchForKeyword(keywords[i]);
-      console.log(result)
       response["users"] = response["users"].concat(result["users"]);
       response["books"] = response["books"].concat(result["books"]);
     }
   } catch {
 
   }
+  response["users"] = getUnique(response["users"]);
+  response["books"] = getUnique(response["books"]);
   return response
 }
 

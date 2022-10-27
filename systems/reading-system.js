@@ -6,11 +6,11 @@ async function create_new_book(auth_key, book_title, synopsis, cover_image) {
 }
 
 async function publish_book(auth_key, book_id) {
-  await db.publishExisitingBook(auth_key, book_id);
+  await db.publishExistingBook(auth_key, book_id);
 }
 
 async function unpublish_book(auth_key, book_id) {
-  await db.unpublishExisitingBook(auth_key, book_id);
+  await db.unpublishExistingBook(auth_key, book_id);
 }
 
 async function delete_book(auth_key, book_id) {

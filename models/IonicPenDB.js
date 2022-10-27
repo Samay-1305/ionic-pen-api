@@ -111,11 +111,11 @@ async function searchForKeyword(query) {
         }
       }
     }
-    ebooks = EBookModel.find({});
-    ebook = null
-    for (let i=0; i<profiles.length; i++) {
-      ebook = ebooks[i]
-      if (ebook['book_title'].includes(keyWord) ||
+    ebooks = await EBookModel.find({});
+    ebook = null;
+    for (let i=0; i<ebooks.length; i++) {
+      ebook = ebooks[i];
+      if (ebook['book_title'].toLowerCase().includes(keyWord) ||
           ebook['author'].toLowerCase().includes(keyWord) || 
           ebook['synopsis'].toLowerCase().includes(keyWord)) {
         if (ebook["published"]) {
@@ -123,8 +123,8 @@ async function searchForKeyword(query) {
         }
       }
     }
-  } catch {
-
+  } catch(err) {
+    console.log(err);
   }
   return response;
 }
@@ -195,7 +195,7 @@ async function addBookToLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
+  let profile = await getUserProfileFromAuthKey(auth_key);
   let ebook = await EBookModel.findOne({"book_id": book_id});
   if (ebook && !profile["library"].includes(book_id)) {
     profile = await UserProfileModel.findOneAndUpdate(profile, {
@@ -207,7 +207,7 @@ async function addBookToLibrary(auth_key, book_id) {
 async function removeBookFromLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
+  let profile = await getUserProfileFromAuthKey(auth_key);
   let index = profile["library"].indexOf(book_id);
   if (index > -1) {
     profile["library"].splice(index, 1);
@@ -268,7 +268,7 @@ async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   return book["book_id"];
 }
 
-async function publishExisitingBook(auth_key, book_id) {
+async function publishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
@@ -314,7 +314,7 @@ module.exports = {
     addBookToLibrary,
     removeBookFromLibrary,
     deleteBookFromDatabase,
-    publishExisitingBook,
+    publishExistingBook,
     unpublishExistingBook,
     createNewBook,
     getAllBooks

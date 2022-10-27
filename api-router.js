@@ -71,7 +71,7 @@ app.post("/api/library/add/", (req, res) => {
 });
 
 app.delete("/api/library/remove/:id/", (req, res) => {
-  let book_id = req.body.book_id;
+  let book_id = req.params.id;
   let auth_key = req.headers['auth-key'];
   book.remove_from_library(auth_key, book_id).then(() => {
     res.status(204).end();
