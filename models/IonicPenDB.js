@@ -268,6 +268,29 @@ async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   return book["book_id"];
 }
 
+async function createNewChapter(auth_key, book_id, title, contents) {
+  const conn = getDatabaseConnection();
+  const EBookModel = conn.model("EBook", EBookSchema);
+  const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
+  let profile = await getUserProfileFromAuthKey(auth_key);
+  let chapter_data = {
+    "chapter_name": title,
+    "chapter_contents": contents,
+    "book_id": book_id
+  };
+  let book = await getEBook(book_id);
+    if (book["author"] == profile["username"]) {
+    let chapter = new EBookChapterModel(chapter_data);
+    await chapter.save();
+    book["chapters"].push(chapter["chapter_id"]);
+    await EBookModel.findOneAndUpdate({
+      "book_id": book_id
+    }, {
+      "chapters": book["chapters"]
+    });
+  }
+}
+
 async function publishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
@@ -317,5 +340,6 @@ module.exports = {
     publishExistingBook,
     unpublishExistingBook,
     createNewBook,
+    createNewChapter,
     getAllBooks
 }

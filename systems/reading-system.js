@@ -5,6 +5,10 @@ async function create_new_book(auth_key, book_title, synopsis, cover_image) {
   return book_id;
 }
 
+async function create_new_chapter(auth_key, chapter_title, chapter_contents, book_id) {
+  await db.createNewChapter(auth_key, book_id, chapter_title, chapter_contents);
+}
+
 async function publish_book(auth_key, book_id) {
   await db.publishExistingBook(auth_key, book_id);
 }
@@ -55,7 +59,8 @@ async function remove_from_library(auth_key, book_id) {
 
 module.exports = {
   create_new_book,
-  publish_book, 
+  create_new_chapter,
+  publish_book,
   unpublish_book,
   delete_book,
   read_book,

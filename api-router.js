@@ -95,7 +95,17 @@ app.post("/api/books/new/", (req, res) => {
       "book_id": book_id
     });
   });
-})
+});
+
+app.post("/api/books/new/chapter/", (req, res) => {
+  let auth_key = req.headers['auth-key'];
+  let chapter_title = req.body["chapter_title"];
+  let chapter_contents = req.body["chapter_contents"];
+  let book_id = req.body["book_id"];
+  book.create_new_chapter(auth_key, chapter_title, chapter_contents, book_id).then(() => {
+    res.status(201).end();
+  });
+});
 
 app.post("/api/books/:id/publish/", (req, res) => {
   let auth_key = req.headers['auth-key'];
@@ -103,23 +113,23 @@ app.post("/api/books/:id/publish/", (req, res) => {
   book.publish_book(auth_key, book_id).then(() => {
     res.status(201).end();
   });
-})
+});
 
 app.post("/api/books/:id/unpublish/", (req, res) => {
   let auth_key = req.headers['auth-key'];
   let book_id = req.params.id;
   book.unpublish_book(auth_key, book_id).then(() => {
     res.status(201).end();
-  })
-})
+  });
+});
 
 app.delete("/api/books/:id/", (req, res) => {
   let auth_key = req.headers['auth-key'];
   let book_id = req.params.id;
   book.delete_book(auth_key, book_id).then(() => {
     res.status(204).end();
-  })
-})
+  });
+});
 
 app.get("/api/books/read/:id/", (req, res) => {
   let auth_key = req.headers['auth-key'];
