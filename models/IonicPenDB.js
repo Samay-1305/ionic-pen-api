@@ -142,25 +142,22 @@ async function getEBookChapter(auth_key, book_id) {
   const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
   let bookmark = await EBookmarkModel.findOne({"book_id": book_id, "username": profile["username"]});
-  if (bookmark) {
-    let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark["chapter_id"]});
-    if (eBookChapter) {
-      return eBookChapter;
+  if (!bookmark) {
+    let ebook = await getEBook(book_id);
+    let chapter_id = null;
+    if (ebook['chapters'].length > 0) {
+      chapter_id = ebook['chapters'][0];
     }
+    bookmark = new EBookmarkModel({
+      'book_id': book_id,
+      'chapter_id': chapter_id,
+      'username': profile['username'],
+      'char_index': 0
+    });
+    await bookmark.save();
   }
-  let ebook = await getEBook(book_id);
-  let chapter_id = null;
-  if (ebook['chapters'].length > 0) {
-    chapter_id = ebook['chapters'][0];
-  }
-  bookmark = new EBookmarkModel({
-    'book_id': book_id,
-    'chapter_id': chapter_id,
-    'username': profile['username'],
-    'char_index': 0
-  });
-  await bookmark.save();
-  return bookmark;
+  let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark["chapter_id"]});
+  return eBookChapter;
 }
 
 async function getNextEBookChapter(auth_key, book_id) {
@@ -170,25 +167,26 @@ async function getNextEBookChapter(auth_key, book_id) {
   let ebook = await getEBook(book_id);
   let profile = await getUserProfileFromAuthKey(auth_key);
   let bookmark = await EBookmarkModel.findOne({"book_id": book_id, "username": profile["username"]});
-  if (bookmark) {
-    let chapter_index = 0;
-    if (eBookChapter) {
-      for (; chapter_index<ebook.chapters.length; chapter_index++) {
-        if (ebook.chapters[chapter_index] == bookmark.chapter_id) {
-          chapter_index++;
-          break
-        }
-      }
-      if (chapter_index < ebook.chapters.length) {
-        bookmark = await EBookmarkModel.findOneAndUpdate(bookmark, {
-          "chapter_id": ebook.chapters[chapter_index],
-          "char_index": 0
-        });
-        let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark["chapter_id"]});
-        return eBookChapter;
-      }
+  if (!bookmark) {
+    return getEBookChapter(auth_key, book_id);  
+  }
+  let chapter_index = 0;
+  for (; chapter_index<ebook.chapters.length; chapter_index++) {
+    if (ebook.chapters[chapter_index] == bookmark.chapter_id) {
+      chapter_index++;
+      break
     }
   }
+  if (chapter_index < ebook.chapters.length) {
+    await EBookmarkModel.findOneAndUpdate(bookmark, {
+      "chapter_id": ebook.chapters[chapter_index],
+      "char_index": 0
+    });
+    let eBookChapter = await EBookChapterModel.findOne({"chapter_id": ebook.chapters[chapter_index]});
+    return eBookChapter;
+  }
+  let eBookChapter = await EBookChapterModel.findOne({"chapter_id": bookmark.chapter_id});
+  return eBookChapter;
 }
 
 async function addBookToLibrary(auth_key, book_id) {
