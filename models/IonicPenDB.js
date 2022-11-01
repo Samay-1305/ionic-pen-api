@@ -8,10 +8,10 @@ const EBookmarkSchema = require('./EBookmarkSchema');
 
 const config = require('../config');
 
-const { database: { host, port, name }} = config;
+const { database: { host, name, username, password }} = config;
 
 const DATABASE_NAME = name;
-const DATABASE_URL = `mongodb://${host}:${port}/${DATABASE_NAME}`;
+const DATABASE_URL = `mongodb+srv://${username}:${password}@${host}/${DATABASE_NAME}?retryWrites=true&w=majority`;
 
 let dbConnection = null;
 
@@ -274,7 +274,7 @@ async function createNewBook(auth_key, book_title, synopsis, cover_image) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model('EBook', EBookSchema);
   const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
+  let profile = await getUserProfileFromAuthKey(auth_key);
   ebook_data = {
     'author': profile.username,
     'book_title': book_title

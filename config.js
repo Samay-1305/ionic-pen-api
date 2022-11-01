@@ -5,9 +5,10 @@ const config = {
         name: 'IonicPenAPI'
     },
     database: {
-        host: '127.0.0.1',
-        port: 27017,
-        name: 'IonicPenDB'
+        host: 'ionicpenapp.mk1uafu.mongodb.net',
+        name: 'IonicPenDB',
+        username: "IonicPenAdmin",
+        password: "Ib7LQJm6Ff5crrgf"
     }
 };
 
