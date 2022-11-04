@@ -50,7 +50,7 @@ author: UserProfile.username
 <br/>
 synopsis: String
 <br/>
-cover_image: Image
+cover_image: String
 <br/>
 published: Boolean
 <br/>
