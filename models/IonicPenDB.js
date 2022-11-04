@@ -192,7 +192,8 @@ async function addBookToLibrary(auth_key, book_id) {
   const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
   let ebook = await EBookModel.findOne({'book_id': book_id});
-  if (ebook && !profile.library.includes(book_id)) {
+  if (ebook && !profile.library.includes(book_id)) {et
+  
     profile = await UserProfileModel.findOneAndUpdate(profile, {
       'library': [...profile.library, book_id]
     });
@@ -283,7 +284,7 @@ async function createNewBook(auth_key, book_title, synopsis, cover_image) {
     ebook_data['synopsis'] = synopsis;
   }
   if (cover_image) {
-    ebook_data['cover-image'] = cover_image;
+    ebook_data['cover_image'] = cover_image;
   }
   let book = new EBookModel(ebook_data);
   await book.save();

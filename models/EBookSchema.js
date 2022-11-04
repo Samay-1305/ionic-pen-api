@@ -21,8 +21,7 @@ const EBookSchema = mongoose.Schema({
     type: String
   },
   cover_image: {
-    data: Buffer,
-    contentType: String
+    type: String
   },
   published: {
     type: Boolean,
