@@ -22,19 +22,9 @@ app.post('/api/login/', auth.login);
 
 app.post('/api/signup/', auth.sign_up);
 
-app.get('/api/homepage/', (req, res) => {
-  let auth_key = req.headers['auth-key'];
-  home.homepage(auth_key).then((response) => {
-    res.send(response);
-  });
-});
+app.get('/api/homepage/', home.homepage);
 
-app.get('/api/search/', (req, res) => {
-  let query = req.query['q'];
-  home.search(query).then((response) => {
-    res.send(response);
-  });
-});
+app.get('/api/search/', home.search);
 
 app.get('/api/books/:id/', (req, res) => {
   let book_id = req.params.id;

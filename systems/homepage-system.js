@@ -12,41 +12,51 @@ function getUnique(arr, key) {
   return result;
 }
 
-async function homepage(auth_key) {
-  let response = {};
-  if (auth_key) {
-    try {
-      response['profile'] = await db.getUserProfileFromAuthKey(auth_key);
-      response['books'] = await db.getAllBooks();
-      response['library'] = [];
-      for (let book_id in response['profile']['library']) {
-        response['library'].push(await db.getEBook(book_id));
-      }
-    } catch(err) {
-      console.log(err);
-    }
+async function homepage(req, res) {
+  let auth_key = req.headers['auth-key'];
+  if (!auth_key) {
+    res.send({'error': 'User is not logged in'});
   }
-  return response;
+  try {
+    let response = {
+      profile: await db.getUserProfileFromAuthKey(auth_key),
+      books: await db.getAllBooks(),
+      library: []
+    }
+    if (response.profile.library) {
+      for (let book_id in response.profile.library) {
+        response.library.push(await db.getEBook(book_id));
+      }
+    }
+    res.send(response);
+  } catch (err) {
+    res.send({
+      'error': err.message
+    });
+  }
 }
 
-async function search(query) {
-  let response = {
-    'users': [],
-    'books': []
-  };
+async function search(req, res) {
+  let query = req.query['q'];
   try {
+    let response = {
+      'users': [],
+      'books': []
+    };
     const keywords = query.split(' ');
     for (let i = 0; i < keywords.length; i++) {
       result = await db.searchForKeyword(keywords[i]);
       response['users'] = response['users'].concat(result['users']);
       response['books'] = response['books'].concat(result['books']);
     }
-  } catch(err) {
-    console.log(err);
+    response['users'] = getUnique(response['users']);
+    response['books'] = getUnique(response['books']);
+    res.send(response);
+  } catch (err) {
+    res.send({
+      'error': 'Unknown Exception'
+    });
   }
-  response['users'] = getUnique(response['users']);
-  response['books'] = getUnique(response['books']);
-  return response;
 }
 
 module.exports = {

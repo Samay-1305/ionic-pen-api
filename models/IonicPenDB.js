@@ -35,13 +35,12 @@ async function getAuthKeyFromCredentials(username, password) {
     throw new Error('Password cannot be empty');
   }
   let account = await UserAccountModel.findOne({
-    'username': username
+    username: username
   });
   if (!account) {
     throw new Error('Invalid Username');
   }
   if (password !== account.password) {
-    console.log("HERE");
     throw new Error('Invalid Password');
   }
   return account.auth_key;
@@ -52,14 +51,14 @@ async function createNewUserAccountAndProfile(username, first_name, last_name, e
   const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
   const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   let account = new UserAccountModel({
-    'username': username,
-    'password': password
+    username: username,
+    password: password
   });
   let profile = new UserProfileModel({
-    'username': username,
-    'first_name': first_name,
-    'last_name': last_name,
-    'email_id': email_id
+    username: username,
+    first_name: first_name,
+    last_name: last_name,
+    email_id: email_id
   });
   try {
     await profile.save();
@@ -77,16 +76,16 @@ async function getUserProfileFromAuthKey(auth_key) {
   const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
   const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
   if (!auth_key) {
-    return null;
+    throw new Error('Auth key needed');
   }
   let account = await UserAccountModel.findOne({
-    'auth_key': auth_key
+    auth_key: auth_key
   });
   if (!account) {
-    return null;
+    throw new Error('Invalid User');
   }
   let profile = await UserProfileModel.findOne({
-    'username': account.username
+    username: account.username
   });
   return profile;
 }
@@ -97,40 +96,32 @@ async function searchForKeyword(query) {
   const EBookModel = conn.model('EBook', EBookSchema);
   const keyWord = query.toLowerCase();
   let response = {
-    'users': [],
-    'books': []
+    users: [],
+    books: []
   };
-  let profiles = null;
+  let profiles = await UserProfileModel.find({});
   let profile = null;
-  let ebooks = null;
+  let ebooks = await EBookModel.find({});
   let ebook = null;
-  try {
-    profiles = await UserProfileModel.find({});
-    profile = null;
-    for (let i=0; i<profiles.length; i++) {
-      profile = profiles[i];
-      if (profile.username.includes(keyWord) ||
-          profile.first_name.toLowerCase().includes(keyWord) || 
-          profile.last_name.toLowerCase().includes(keyWord)) {
-        if (profile.public_account) {
-          response['users'].push(profile);
-        }
+  for (let i=0; i<profiles.length; i++) {
+    profile = profiles[i];
+    if (profile.username.includes(keyWord) ||
+        profile.first_name.toLowerCase().includes(keyWord) || 
+        profile.last_name.toLowerCase().includes(keyWord)) {
+      if (profile.public_account) {
+        response.users.push(profile);
       }
     }
-    ebooks = await EBookModel.find({});
-    ebook = null;
-    for (let i=0; i<ebooks.length; i++) {
-      ebook = ebooks[i];
-      if (ebook.book_title.toLowerCase().includes(keyWord) ||
-          ebook.author.toLowerCase().includes(keyWord) || 
-          ebook.synopsis.toLowerCase().includes(keyWord)) {
-        if (ebook.published) {
-          response['books'].push(ebook);
-        }
+  }
+  for (let i=0; i<ebooks.length; i++) {
+    ebook = ebooks[i];
+    if (ebook.book_title.toLowerCase().includes(keyWord) ||
+        ebook.author.toLowerCase().includes(keyWord) || 
+        ebook.synopsis.toLowerCase().includes(keyWord)) {
+      if (ebook.published) {
+        response.books.push(ebook);
       }
     }
-  } catch(err) {
-    console.log(err);
   }
   return response;
 }
