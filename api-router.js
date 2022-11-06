@@ -18,28 +18,9 @@ app.get('/api/', (req, res) => {
   res.send({'response': 'Welcome to Ionic Pen!'});
 });
 
-app.post('/api/login/', (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-  auth.login(username, password).then((auth_key) => {
-    res.send({
-      'auth-key': auth_key
-    });
-  });
-});
+app.post('/api/login/', auth.login);
 
-app.post('/api/signup/', (req, res) => {
-  let username = req.body.username;
-  let first_name = req.body.first_name;
-  let last_name = req.body.last_name;
-  let email_id = req.body.email_id;
-  let password = req.body.password;
-  auth.sign_up(username, first_name, last_name, email_id, password).then((auth_key) => {
-    res.send({
-      'auth-key': auth_key
-    });
-  });
-});
+app.post('/api/signup/', auth.sign_up);
 
 app.get('/api/homepage/', (req, res) => {
   let auth_key = req.headers['auth-key'];

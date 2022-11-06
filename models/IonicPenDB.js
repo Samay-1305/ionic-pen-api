@@ -28,58 +28,67 @@ function getDatabaseConnection() {
 async function getAuthKeyFromCredentials(username, password) {
   const conn = getDatabaseConnection();
   const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
-  if (username && password) {
-    let account = await UserAccountModel.findOne({
-      'username': username
-    });
-    if (account) {
-      if (password === account.password) {
-        return account.auth_key;
-      }
-      throw Error('Invalid Password');
-    }
-    throw Error('Invalid Username');
+  if (!username) {
+    throw new Error('Username cannot be empty');
   }
-}
-
-async function getUserProfileFromAuthKey(auth_key) {
-  const conn = getDatabaseConnection();
-  const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
-  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
-  let account = null;
-  let profile = null;
-  if (auth_key) {
-    account = await UserAccountModel.findOne({
-      'auth_key': auth_key
-    });
-    if (account) {
-      profile = await UserProfileModel.findOne({
-        'username': account.username
-      });
-    }
+  if (!password) {
+    throw new Error('Password cannot be empty');
   }
-  return profile;
+  let account = await UserAccountModel.findOne({
+    'username': username
+  });
+  if (!account) {
+    throw new Error('Invalid Username');
+  }
+  if (password !== account.password) {
+    console.log("HERE");
+    throw new Error('Invalid Password');
+  }
+  return account.auth_key;
 }
 
 async function createNewUserAccountAndProfile(username, first_name, last_name, email_id, password) {
   const conn = getDatabaseConnection();
   const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
   const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
-  let account = null;
-  let profile = null;
-  account = new UserAccountModel({
+  let account = new UserAccountModel({
     'username': username,
     'password': password
   });
-  profile = new UserProfileModel({
+  let profile = new UserProfileModel({
     'username': username,
     'first_name': first_name,
     'last_name': last_name,
     'email_id': email_id
   });
-  await profile.save();
-  await account.save();
+  try {
+    await profile.save();
+    await account.save();
+  } catch (err) {
+    const error_message_field = err.message.split("{")[1].split(" ")[1];
+    const error_message = `${error_message_field === "username:"? "Username" : "Email ID"} already exists!`;
+    throw new Error(error_message);
+  }
   return account.auth_key;
+}
+
+async function getUserProfileFromAuthKey(auth_key) {
+  const conn = getDatabaseConnection();
+  const UserAccountModel = conn.model('UserAccount', UserAccountSchema);
+  const UserProfileModel = conn.model('UserProfile', UserProfileSchema);
+  if (!auth_key) {
+    return null;
+  }
+  let account = await UserAccountModel.findOne({
+    'auth_key': auth_key
+  });
+  if (!account) {
+    return null;
+  }
+  let profile = await UserProfileModel.findOne({
+    'username': account.username
+  });
+  return profile;
 }
 
 async function searchForKeyword(query) {
