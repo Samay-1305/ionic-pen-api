@@ -12,8 +12,9 @@
   "version": "1.0.0",
   "main": "api-router.js",
   "scripts": {
-    "start": "nodemon api-router.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon api-router.js",
+    "start": "node api-router.js",
+    "test": "prettier --check ."
   },
   "repository": {
     "type": "git",
