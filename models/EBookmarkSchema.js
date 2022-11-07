@@ -1,18 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const EBookmarkSchema = mongoose.Schema({
-  book_id: {
-    type: String
+const EBookmarkSchema = mongoose.Schema(
+  {
+    book_id: {
+      type: String,
+    },
+    chapter_id: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
+    char_index: {
+      type: Number,
+    },
   },
-  chapter_id: {
-    type: String,
-  },
-  username: {
-    type: String
-  },
-  char_index: { 
-    type: Number
-  }
-}, {collection : 'EBookmark'});
+  { collection: "EBookmark" }
+);
 
 module.exports = EBookmarkSchema;
