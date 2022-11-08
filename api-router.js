@@ -8,7 +8,7 @@ const book = require("./systems/reading-system");
 const config = require("./config");
 
 const {
-  api: { host, port, name },
+  api: { host, port },
 } = config;
 
 const app = express();
