@@ -54,7 +54,6 @@ async function read_book(req, res) {
       error: err.message,
     });
   }
-  return ebookChapter;
 }
 
 async function delete_book(req, res) {
