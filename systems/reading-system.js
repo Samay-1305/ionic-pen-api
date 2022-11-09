@@ -20,7 +20,6 @@ async function create_new_book(req, res) {
       error: err.message,
     });
   }
-  return book_id;
 }
 
 async function create_new_chapter(req, res) {

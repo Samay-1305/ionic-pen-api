@@ -1,4 +1,5 @@
 const db = require("../models/IonicPenDB");
+const reader = require("./reading-system");
 
 function getUnique(arr, key) {
   let set = new Set();
@@ -24,7 +25,8 @@ async function homepage(req, res) {
       library: [],
     };
     if (response.profile.library) {
-      for (let book_id in response.profile.library) {
+      for (let ind in response.profile.library) {
+        let book_id = response.profile.library[ind];
         response.library.push(await db.getEBook(book_id));
       }
     }
