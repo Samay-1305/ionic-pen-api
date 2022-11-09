@@ -1,5 +1,4 @@
-const db = require('../models/IonicPenDB');
-
+const db = require("../models/IonicPenDB");
 
 async function login(req, res) {
   let username = req.body.username;
@@ -7,11 +6,11 @@ async function login(req, res) {
   try {
     let auth_key = await db.getAuthKeyFromCredentials(username, password);
     res.send({
-      'auth-key': auth_key
+      "auth-key": auth_key,
     });
   } catch (err) {
     res.send({
-      'error': err.message
+      error: err.message,
     });
   }
 }
@@ -23,18 +22,24 @@ async function sign_up(req, res) {
   let email_id = req.body.email_id;
   let password = req.body.password;
   try {
-    let auth_key = await db.createNewUserAccountAndProfile(username, first_name, last_name, email_id, password);
+    let auth_key = await db.createNewUserAccountAndProfile(
+      username,
+      first_name,
+      last_name,
+      email_id,
+      password
+    );
     res.send({
-      'auth-key': auth_key
+      "auth-key": auth_key,
     });
   } catch (err) {
     res.send({
-      'error': err.message
+      error: err.message,
     });
   }
 }
 
 module.exports = {
   login,
-  sign_up
-}
+  sign_up,
+};

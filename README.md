@@ -22,7 +22,7 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [DELETE] `/api/books/:id/` => Delete a book.
 <br/>
-[POST] `/api/books/:id/publish/` => Publish a book. 
+[POST] `/api/books/:id/publish/` => Publish a book.
 <br/>
 [POST] `/api/books/:id/unpublish/` => Unpublish a book.
 <br/>
@@ -36,10 +36,10 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 <br/>
 [DELETE] `/api/library/remove/:id/` => Remove a book from a users library.
 
-
 ## Database Models:
 
 ### EBook
+
 book_id: UUID
 <br/>
 book_title: String
@@ -60,6 +60,7 @@ likes: [UserProfile.username]
 <br/>
 
 ### EBookChapter
+
 chapter_id: UUID
 <br/>
 chapter_name: String
@@ -70,6 +71,7 @@ book_id: EBook.book_id
 <br/>
 
 ### UserAccount
+
 username: UserProfile.username
 <br/>
 password: String
@@ -78,6 +80,7 @@ auth_key: UUID
 <br/>
 
 ### UserProfile
+
 username: String
 <br/>
 first_name: String
@@ -96,6 +99,7 @@ works: [EBook.book_id]
 <br/>
 
 ### EBookmark
+
 book_id: EBook.book_id
 <br/>
 chapter_id: EBookChapter.chapter_id
