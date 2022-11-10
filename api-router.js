@@ -7,6 +7,8 @@ const book = require("./systems/reading-system");
 
 const config = require("./config");
 
+const process = require("process");
+
 const {
   api: { host, port },
 } = config;
@@ -51,6 +53,8 @@ app.post("/api/library/add/", book.add_to_library);
 
 app.delete("/api/library/remove/:id/", book.remove_from_library);
 
-app.listen(port, () => {
-  console.log(`Ionic-Pen-API app listening at http://${host}:${port}`);
+app.listen(process.env.port || port, () => {
+  console.log(
+    `Ionic-Pen-API app listening at http://${host}:${process.env.port || port}`
+  );
 });
