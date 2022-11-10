@@ -12,7 +12,7 @@
   "version": "1.0.0",
   "main": "api-router.js",
   "scripts": {
-    "dev": "nodemon api-router.js",
+    "dev": "prettier --write . && nodemon api-router.js",
     "start": "node api-router.js",
     "test": "prettier --check ."
   },
