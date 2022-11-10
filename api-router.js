@@ -53,8 +53,8 @@ app.post("/api/library/add/", book.add_to_library);
 
 app.delete("/api/library/remove/:id/", book.remove_from_library);
 
-app.listen(process.env.port || port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(
-    `Ionic-Pen-API app listening at http://${host}:${process.env.port || port}`
+    `Ionic-Pen-API app listening at http://${host}:${process.env.PORT || port}`
   );
 });
