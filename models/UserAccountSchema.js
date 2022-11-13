@@ -12,10 +12,11 @@ const UserAccountSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
-      trim: true,
-      validate(value) {
-        if (value.length < 8) throw new Error("Invalid password length.");
-      },
+      trim: false,
+      // Password is now a hash, not a plain text password.
+      // validate(value) {
+      //   if (value.length < 8) throw new Error("Invalid password length.");
+      // },
     },
     auth_key: {
       type: String,
