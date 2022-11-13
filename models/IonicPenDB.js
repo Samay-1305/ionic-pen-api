@@ -43,7 +43,7 @@ async function getAuthKeyFromCredentials(username, password) {
   if (!account) {
     throw new Error("Invalid Username");
   }
-  if (!(bcrypt.compare(password, account.password, (err, res) => res))) {
+  if (!bcrypt.compare(password, account.password, (err, res) => res)) {
     throw new Error("Invalid Password");
   }
   // if (password !== account.password) {
