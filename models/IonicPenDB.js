@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const UserAccountSchema = require("./UserAccountSchema");
 const UserProfileSchema = require("./UserProfileSchema");
@@ -42,9 +43,12 @@ async function getAuthKeyFromCredentials(username, password) {
   if (!account) {
     throw new Error("Invalid Username");
   }
-  if (password !== account.password) {
+  if (!(bcrypt.compare(password, account.password, (err, res) => res))) {
     throw new Error("Invalid Password");
   }
+  // if (password !== account.password) {
+  //   throw new Error("Invalid Password");
+  // }
   return account.auth_key;
 }
 

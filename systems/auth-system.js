@@ -1,4 +1,6 @@
 const db = require("../models/IonicPenDB");
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 async function login(req, res) {
   let username = req.body.username;
@@ -20,7 +22,13 @@ async function sign_up(req, res) {
   let first_name = req.body.first_name;
   let last_name = req.body.last_name;
   let email_id = req.body.email_id;
-  let password = req.body.password;
+  let password = bcrypt.hash(
+    req.body.password,
+    saltRounds,
+    function (_err, hash) {
+      return hash;
+    }
+  );
   try {
     let auth_key = await db.createNewUserAccountAndProfile(
       username,
