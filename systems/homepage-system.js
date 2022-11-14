@@ -39,6 +39,7 @@ async function homepage(req, res) {
 }
 
 async function search(req, res) {
+  let auth_key = req.headers["auth-key"];
   let query = req.query["q"];
   try {
     let response = {
@@ -47,12 +48,12 @@ async function search(req, res) {
     };
     const keywords = query.split(" ");
     for (let i = 0; i < keywords.length; i++) {
-      result = await db.searchForKeyword(keywords[i]);
+      result = await db.searchForKeyword(keywords[i], auth_key);
       response["users"] = response["users"].concat(result["users"]);
       response["books"] = response["books"].concat(result["books"]);
     }
-    response["users"] = getUnique(response["users"]);
-    response["books"] = getUnique(response["books"]);
+    response["users"] = getUnique(response["users"], 'username');
+    response["books"] = getUnique(response["books"], 'book_id');
     res.send(response);
   } catch (err) {
     res.send({

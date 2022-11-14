@@ -102,7 +102,7 @@ async function getUserProfileFromAuthKey(auth_key) {
   return profile;
 }
 
-async function searchForKeyword(query) {
+async function searchForKeyword(query, auth_key) {
   const conn = getDatabaseConnection();
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
   const EBookModel = conn.model("EBook", EBookSchema);
@@ -111,6 +111,9 @@ async function searchForKeyword(query) {
     users: [],
     books: [],
   };
+  let user_profile = auth_key
+    ? await getUserProfileFromAuthKey(auth_key)
+    : null;
   let profiles = await UserProfileModel.find({});
   let profile = null;
   let ebooks = await EBookModel.find({});
@@ -122,7 +125,10 @@ async function searchForKeyword(query) {
       profile.first_name.toLowerCase().includes(keyWord) ||
       profile.last_name.toLowerCase().includes(keyWord)
     ) {
-      if (profile.public_account) {
+      if (
+        profile.public_account ||
+        (user_profile && user_profile.username === profile.username)
+      ) {
         response.users.push(profile);
       }
     }
@@ -134,7 +140,10 @@ async function searchForKeyword(query) {
       ebook.author.toLowerCase().includes(keyWord) ||
       (ebook.synopsis && ebook.synopsis.toLowerCase().includes(keyWord))
     ) {
-      if (ebook.published) {
+      if (
+        ebook.published ||
+        (user_profile && user_profile.username === ebook.author)
+      ) {
         response.books.push(ebook);
       }
     }
