@@ -52,8 +52,8 @@ async function search(req, res) {
       response["users"] = response["users"].concat(result["users"]);
       response["books"] = response["books"].concat(result["books"]);
     }
-    response["users"] = getUnique(response["users"], 'username');
-    response["books"] = getUnique(response["books"], 'book_id');
+    response["users"] = getUnique(response["users"], "username");
+    response["books"] = getUnique(response["books"], "book_id");
     res.send(response);
   } catch (err) {
     res.send({
