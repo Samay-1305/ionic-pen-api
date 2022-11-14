@@ -43,12 +43,10 @@ async function getAuthKeyFromCredentials(username, password) {
   if (!account) {
     throw new Error("Invalid Username");
   }
-  if (!bcrypt.compare(password, account.password, (err, res) => res)) {
+  let password_is_valid = await bcrypt.compare(password, account.password);
+  if (!password_is_valid) {
     throw new Error("Invalid Password");
   }
-  // if (password !== account.password) {
-  //   throw new Error("Invalid Password");
-  // }
   return account.auth_key;
 }
 
@@ -134,7 +132,7 @@ async function searchForKeyword(query) {
     if (
       ebook.book_title.toLowerCase().includes(keyWord) ||
       ebook.author.toLowerCase().includes(keyWord) ||
-      ebook.synopsis.toLowerCase().includes(keyWord)
+      (ebook.synopsis && ebook.synopsis.toLowerCase().includes(keyWord))
     ) {
       if (ebook.published) {
         response.books.push(ebook);

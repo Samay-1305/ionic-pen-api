@@ -22,13 +22,7 @@ async function sign_up(req, res) {
   let first_name = req.body.first_name;
   let last_name = req.body.last_name;
   let email_id = req.body.email_id;
-  let password = bcrypt.hash(
-    req.body.password,
-    saltRounds,
-    function (_err, hash) {
-      return hash;
-    }
-  );
+  let password = await bcrypt.hash(req.body.password, saltRounds);
   try {
     let auth_key = await db.createNewUserAccountAndProfile(
       username,
