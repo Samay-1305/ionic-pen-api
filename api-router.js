@@ -29,7 +29,7 @@ app.get("/api/homepage/", home.homepage);
 
 app.get("/api/search/", home.search);
 
-app.get("/api/books/:id/", book.get_book_info);
+app.get("/api/books/:book_id/", book.get_book_info);
 
 app.post("/api/books/new/", book.create_new_book);
 
@@ -41,7 +41,7 @@ app.post("/api/books/:id/publish/", book.publish_book);
 
 app.post("/api/books/:id/unpublish/", book.unpublish_book);
 
-app.get("/api/books/read/:id/", book.read_book);
+app.get("/api/books/read/:book_id/:chapter_id/", book.read_book);
 
 app.get("/api/books/read/:id/next/", book.get_next_chapter);
 

@@ -44,11 +44,13 @@ async function create_new_chapter(req, res) {
 
 async function read_book(req, res) {
   let auth_key = req.headers["auth-key"];
-  let book_id = req.params.id;
+  let book_id = req.params.book_id;
+  let chapter_id = req.params.chapter_id;
   try {
-    let ebookChapter = await db.getEBookChapter(auth_key, book_id);
+    let ebookChapter = await db.getEBookChapter(auth_key, book_id, chapter_id);
     res.send(ebookChapter);
   } catch (err) {
+    console.log(err.message);
     res.send({
       error: err.message,
     });
@@ -95,7 +97,8 @@ async function unpublish_book(req, res) {
 }
 
 async function get_book_info(req, res) {
-  let book_id = req.params.id;
+  let auth_key = req.headers["auth-key"];
+  let book_id = req.params.book_id;
   try {
     let ebook = await db.getEBook(book_id);
     res.send(ebook);

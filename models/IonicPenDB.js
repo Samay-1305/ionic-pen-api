@@ -154,37 +154,60 @@ async function searchForKeyword(query, auth_key) {
 async function getEBook(book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
+  const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
   let ebook = await EBookModel.findOne({ book_id: book_id });
+  let chapters = [];
+  for (let i=0; i<ebook.chapters.length; i++) {
+    chapters.push(await EBookChapterModel.findOne({
+      chapter_id: ebook.chapters[i],
+    }));
+  }
+  ebook.chapters = chapters;
   return ebook;
 }
 
-async function getEBookChapter(auth_key, book_id) {
+async function getEBookChapter(auth_key, book_id, chapter_id) {
   const conn = getDatabaseConnection();
   const EBookmarkModel = conn.model("EBookmark", EBookmarkSchema);
   const EBookChapterModel = conn.model("EBookChapter", EBookChapterSchema);
-  let profile = await getUserProfileFromAuthKey(auth_key);
-  let bookmark = await EBookmarkModel.findOne({
-    book_id: book_id,
-    username: profile.username,
-  });
-  if (!bookmark) {
-    let ebook = await getEBook(book_id);
-    let chapter_id = null;
-    if (ebook.chapters.length > 0) {
-      chapter_id = ebook.chapters[0];
-    }
-    bookmark = new EBookmarkModel({
+  if (auth_key) {
+    let profile = await getUserProfileFromAuthKey(auth_key);
+    let bookmark = await EBookmarkModel.findOne({
       book_id: book_id,
-      chapter_id: chapter_id,
       username: profile.username,
-      char_index: 0,
     });
-    await bookmark.save();
+    if (!bookmark) {
+      let ebook = await getEBook(book_id);
+      let chapter_id = null;
+      if (ebook.chapters.length > 0) {
+        chapter_id = ebook.chapters[0];
+      }
+      bookmark = new EBookmarkModel({
+        book_id: book_id,
+        chapter_id: chapter_id,
+        username: profile.username,
+        char_index: 0,
+      });
+      await bookmark.save();
+    }
+    let eBookChapter = await EBookChapterModel.findOne({
+      chapter_id: bookmark["chapter_id"],
+    });
+    return eBookChapter;
   }
-  let eBookChapter = await EBookChapterModel.findOne({
-    chapter_id: bookmark["chapter_id"],
-  });
-  return eBookChapter;
+  let ebook = await getEBook(book_id);
+  if (ebook.chapters.length > 0 && chapter_id > ebook.chapters.length) {
+    chapter_id = ebook.chapters.length - 1;
+  } else {
+    chapter_id = 0;
+  }
+  if (chapter_id >= -1) {
+    let eBookChapter = await EBookChapterModel.findOne({
+      chapter_id: ebook.chapters[chapter_id],
+    });
+    return eBookChapter;
+  }
+  return {};
 }
 
 async function getNextEBookChapter(auth_key, book_id) {
@@ -198,7 +221,7 @@ async function getNextEBookChapter(auth_key, book_id) {
     username: profile["username"],
   });
   if (!bookmark) {
-    return getEBookChapter(auth_key, book_id);
+    return await getEBookChapter(auth_key, book_id);
   }
   let chapter_index = 0;
   for (; chapter_index < ebook.chapters.length; chapter_index++) {
