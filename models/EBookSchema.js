@@ -10,6 +10,7 @@ const EBookSchema = mongoose.Schema(
     },
     book_title: {
       type: String,
+      default: "",
     },
     chapters: {
       type: Array,
@@ -17,12 +18,27 @@ const EBookSchema = mongoose.Schema(
     },
     author: {
       type: String,
+      default: "",
     },
     synopsis: {
       type: String,
+      default: "",
+    },
+    categories: {
+      type: Array,
+      default: [],
+    },
+    age: {
+      type: String,
+      default: "",
+    },
+    wordcount: {
+      type: String,
+      default: "",
     },
     cover_image: {
       type: String,
+      default: "",
     },
     published: {
       type: Boolean,
