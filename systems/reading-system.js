@@ -42,15 +42,39 @@ async function create_new_chapter(req, res) {
   }
 }
 
-async function read_book(req, res) {
+async function get_bookmark(req, res) {
   let auth_key = req.headers["auth-key"];
   let book_id = req.params.book_id;
+  try {
+    let bookmark = await db.getEBookmark(auth_key, book_id);
+    res.send(bookmark);
+  } catch (err) {
+    res.send({
+      error: err.message,
+    });
+  }
+}
+
+async function set_bookmark(req, res) {
+  let auth_key = req.headers["auth-key"];
+  let book_id = req.body.book_id;
+  let chapter_ind = req.body.chapter_ind;
+  try {
+    let bookmark = await db.setEBookmark(auth_key, book_id, chapter_ind);
+    res.send(bookmark);
+  } catch (err) {
+    res.send({
+      error: err.message,
+    });
+  }
+}
+
+async function read_book(req, res) {
   let chapter_id = req.params.chapter_id;
   try {
-    let ebookChapter = await db.getEBookChapter(auth_key, book_id, chapter_id);
+    let ebookChapter = await db.getEBookChapterByID(chapter_id);
     res.send(ebookChapter);
   } catch (err) {
-    console.log(err.message);
     res.send({
       error: err.message,
     });
@@ -180,4 +204,6 @@ module.exports = {
   get_library_books,
   add_to_library,
   remove_from_library,
+  get_bookmark,
+  set_bookmark,
 };

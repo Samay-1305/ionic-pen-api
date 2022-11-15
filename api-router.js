@@ -41,7 +41,11 @@ app.post("/api/books/:id/publish/", book.publish_book);
 
 app.post("/api/books/:id/unpublish/", book.unpublish_book);
 
-app.get("/api/books/read/:book_id/:chapter_id/", book.read_book);
+app.get("/api/bookmark/get/:book_id/", book.get_bookmark);
+
+app.post("/api/bookmark/set/", book.set_bookmark);
+
+app.get("/api/books/read/:chapter_id/", book.read_book);
 
 app.get("/api/books/read/:id/next/", book.get_next_chapter);
 

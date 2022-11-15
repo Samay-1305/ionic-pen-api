@@ -5,8 +5,8 @@ const EBookmarkSchema = mongoose.Schema(
     book_id: {
       type: String,
     },
-    chapter_id: {
-      type: String,
+    chapter_ind: {
+      type: Number,
     },
     username: {
       type: String,
