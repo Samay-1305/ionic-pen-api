@@ -15,12 +15,9 @@ function getUnique(arr, key) {
 
 async function homepage(req, res) {
   let auth_key = req.headers["auth-key"];
-  if (!auth_key) {
-    res.send({ error: "User is not logged in" });
-  }
   try {
     let response = {
-      profile: await db.getUserProfileFromAuthKey(auth_key),
+      profile: auth_key ? await db.getUserProfileFromAuthKey(auth_key) : {},
       books: await db.getAllBooks(),
       library: [],
     };
