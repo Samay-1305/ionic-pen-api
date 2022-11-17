@@ -160,7 +160,7 @@ async function getEBook(book_id) {
   let chapter_info = {};
   for (let i = 0; i < ebook.chapters.length; i++) {
     chapter_info = await EBookChapterModel.findOne({
-      chapter_id: ebook.chapters[i],
+      chapter_id: ebook.chapters[i].chapter_id,
     });
     chapters.push({
       chapter_id: chapter_info.chapter_id,
@@ -351,7 +351,10 @@ async function createNewChapter(auth_key, book_id, title, contents) {
   if (book.author === profile.username) {
     let chapter = new EBookChapterModel(chapter_data);
     await chapter.save();
-    book.chapters.push(chapter.chapter_id);
+    book.chapters.push({
+      chapter_id: chapter.chapter_id,
+      chapter_name: title,
+    });
     await EBookModel.findOneAndUpdate(
       {
         book_id: book_id,
