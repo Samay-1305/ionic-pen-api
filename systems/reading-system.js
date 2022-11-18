@@ -125,10 +125,10 @@ async function get_book_info(req, res) {
   let book_id = req.params.book_id;
   try {
     let ebook = await db.getEBook(book_id);
-    let profile = auth_key? await db.getUserProfileFromAuthKey(auth_key): {};
+    let profile = auth_key ? await db.getUserProfileFromAuthKey(auth_key) : {};
     res.send({
       book: ebook,
-      is_author: profile.username === ebook.author
+      is_author: profile.username === ebook.author,
     });
   } catch (err) {
     res.send({
