@@ -102,6 +102,18 @@ async function getUserProfileFromAuthKey(auth_key) {
   return profile;
 }
 
+async function getUserProfileFromUsername(username) {
+  const conn = getDatabaseConnection();
+  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
+  if (!username) {
+    throw new Error("Username needed");
+  }
+  let profile = await UserProfileModel.findOne({
+    username: username,
+  });
+  return profile;
+}
+
 async function searchForKeyword(query, auth_key) {
   const conn = getDatabaseConnection();
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
@@ -369,6 +381,7 @@ async function createNewChapter(auth_key, book_id, title, contents) {
 module.exports = {
   getAuthKeyFromCredentials,
   getUserProfileFromAuthKey,
+  getUserProfileFromUsername,
   createNewUserAccountAndProfile,
   searchForKeyword,
   getEBook,

@@ -29,6 +29,8 @@ app.get("/api/homepage/", home.homepage);
 
 app.get("/api/profile/", home.get_profile);
 
+app.get("/api/profile/:username/", home.get_profile_by_username);
+
 app.get("/api/search/", home.search);
 
 app.get("/api/books/:book_id/", book.get_book_info);

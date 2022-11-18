@@ -71,8 +71,22 @@ async function get_profile(req, res) {
   }
 }
 
+async function get_profile_by_username(req, res) {
+  let auth_key = req.headers["auth-key"];
+  let username = req.params.username;
+  try {
+    let response = auth_key ? await db.getUserProfileFromUsername(username) : {};
+    res.send(response);
+  } catch (err) {
+    res.send({
+      error: err.message,
+    });
+  }
+}
+
 module.exports = {
   homepage,
   search,
   get_profile,
+  get_profile_by_username
 };
