@@ -59,7 +59,20 @@ async function search(req, res) {
   }
 }
 
+async function get_profile(req, res) {
+  let auth_key = req.headers["auth-key"];
+  try {
+    let response = auth_key ? await db.getUserProfileFromAuthKey(auth_key) : {}
+    res.send(response);
+  } catch (err) {
+    res.send({
+      error: err.message,
+    });
+  }
+}
+
 module.exports = {
   homepage,
   search,
+  get_profile
 };
