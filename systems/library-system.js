@@ -7,7 +7,7 @@ async function get_all_books(req, res) {
     res.send({ books: books });
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -20,11 +20,11 @@ async function get_book_info(req, res) {
     let profile = auth_key ? await db.getUserProfileFromAuthKey(auth_key) : {};
     res.send({
       book: ebook,
-      is_author: profile.username === ebook.author
+      is_author: profile.username === ebook.author,
     });
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -37,7 +37,7 @@ async function delete_book(req, res) {
     res.status(204).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -49,7 +49,7 @@ async function read_book(req, res) {
     res.send(ebookChapter);
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -94,11 +94,11 @@ async function create_new_book(req, res) {
       cover_image
     );
     res.send({
-      book_id: book_id
+      book_id: book_id,
     });
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -118,7 +118,7 @@ async function create_new_chapter(req, res) {
     res.status(201).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -131,7 +131,7 @@ async function publish_book(req, res) {
     res.status(201).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -144,7 +144,7 @@ async function unpublish_book(req, res) {
     res.status(201).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -164,7 +164,7 @@ async function get_library_books(req, res) {
     res.send({ library: library });
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -177,7 +177,7 @@ async function add_to_library(req, res) {
     res.status(201).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -190,7 +190,7 @@ async function remove_from_library(req, res) {
     res.status(204).end();
   } catch (err) {
     res.send({
-      error: err.message
+      error: err.message,
     });
   }
 }
@@ -208,5 +208,5 @@ module.exports = {
   get_all_books,
   get_library_books,
   add_to_library,
-  remove_from_library
+  remove_from_library,
 };

@@ -70,7 +70,7 @@ async function get_user_profile(req, res) {
       response = await db.getUserProfileFromAuthKey(auth_key);
     }
     if (username) {
-      response = await db.getUserProfileFromUsername(username)
+      response = await db.getUserProfileFromUsername(username);
     }
     res.send(response);
   } catch (err) {
@@ -83,5 +83,5 @@ async function get_user_profile(req, res) {
 module.exports = {
   get_homepage,
   perform_search,
-  get_user_profile
+  get_user_profile,
 };
