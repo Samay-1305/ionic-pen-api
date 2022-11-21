@@ -395,5 +395,5 @@ module.exports = {
   publishExistingBook,
   unpublishExistingBook,
   createNewBook,
-  createNewChapter,
+  createNewChapter
 };

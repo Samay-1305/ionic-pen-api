@@ -3,7 +3,7 @@ const cors = require("cors");
 
 const auth = require("./systems/auth-system");
 const home = require("./systems/homepage-system");
-const book = require("./systems/reading-system");
+const library = require("./systems/library-system");
 
 const config = require("./config");
 
@@ -25,41 +25,37 @@ app.post("/api/login/", auth.login);
 
 app.post("/api/signup/", auth.sign_up);
 
-app.get("/api/homepage/", home.homepage);
+app.get("/api/homepage/", home.get_homepage);
 
-app.get("/api/profile/", home.get_profile);
+app.get("/api/search/", home.perform_search);
 
-app.get("/api/profile/:username/", home.get_profile_by_username);
+app.get("/api/profile/", home.get_user_profile);
 
-app.get("/api/search/", home.search);
+app.get("/api/books/", library.get_all_books);
 
-app.get("/api/books/:book_id/", book.get_book_info);
+app.get("/api/books/:book_id/", library.get_book_info);
 
-app.post("/api/books/new/", book.create_new_book);
+app.delete("/api/books/:book_id/", library.delete_book);
 
-app.post("/api/books/new/chapter/", book.create_new_chapter);
+app.get("/api/books/read/:chapter_id/", library.read_book);
 
-app.delete("/api/books/:id/", book.delete_book);
+app.get("/api/bookmark/get/:book_id/", library.get_bookmark);
 
-app.post("/api/books/:id/publish/", book.publish_book);
+app.put("/api/bookmark/set/", library.set_bookmark);
 
-app.post("/api/books/:id/unpublish/", book.unpublish_book);
+app.post("/api/books/new/", library.create_new_book);
 
-app.get("/api/bookmark/get/:book_id/", book.get_bookmark);
+app.post("/api/books/new/chapter/", library.create_new_chapter);
 
-app.post("/api/bookmark/set/", book.set_bookmark);
+app.patch("/api/books/publish/:book_id/", library.publish_book);
 
-app.get("/api/books/read/:chapter_id/", book.read_book);
+app.patch("/api/books/unpublish/:book_id/", library.unpublish_book);
 
-app.get("/api/books/read/:id/next/", book.get_next_chapter);
+app.get("/api/library/", library.get_library_books);
 
-app.delete("/api/books/remove/:id/", book.remove_from_library);
+app.post("/api/library/add/", library.add_to_library);
 
-app.get("/api/library/", book.get_library_books);
-
-app.post("/api/library/add/", book.add_to_library);
-
-app.delete("/api/library/remove/:id/", book.remove_from_library);
+app.patch("/api/library/remove/:id/", library.remove_from_library);
 
 app.listen(process.env.PORT || port, () => {
   console.log(

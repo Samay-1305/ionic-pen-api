@@ -1,5 +1,4 @@
 const db = require("../models/IonicPenDB");
-const reader = require("./reading-system");
 
 function getUnique(arr, key) {
   let set = new Set();
@@ -13,7 +12,7 @@ function getUnique(arr, key) {
   return result;
 }
 
-async function homepage(req, res) {
+async function get_homepage(req, res) {
   let auth_key = req.headers["auth-key"];
   try {
     let response = {
@@ -22,9 +21,12 @@ async function homepage(req, res) {
       library: [],
     };
     if (response.profile.library) {
+      let book_id = null;
+      let book_data = null;
       for (let ind in response.profile.library) {
-        let book_id = response.profile.library[ind];
-        response.library.push(await db.getEBook(book_id));
+        book_id = response.profile.library[ind];
+        book_data = await db.getEBook(book_id);
+        response.library.push(book_data);
       }
     }
     res.send(response);
@@ -35,9 +37,9 @@ async function homepage(req, res) {
   }
 }
 
-async function search(req, res) {
+async function perform_search(req, res) {
   let auth_key = req.headers["auth-key"];
-  let query = req.query["q"];
+  let query = req.query.q;
   try {
     let response = {
       users: [],
@@ -59,23 +61,17 @@ async function search(req, res) {
   }
 }
 
-async function get_profile(req, res) {
+async function get_user_profile(req, res) {
   let auth_key = req.headers["auth-key"];
+  let username = req.query.username;
   try {
-    let response = auth_key ? await db.getUserProfileFromAuthKey(auth_key) : {};
-    res.send(response);
-  } catch (err) {
-    res.send({
-      error: err.message,
-    });
-  }
-}
-
-async function get_profile_by_username(req, res) {
-  let auth_key = req.headers["auth-key"];
-  let username = req.params.username;
-  try {
-    let response = auth_key ? await db.getUserProfileFromUsername(username) : {};
+    let response = {};
+    if (auth_key && !username) {
+      response = await db.getUserProfileFromAuthKey(auth_key);
+    }
+    if (username) {
+      response = await db.getUserProfileFromUsername(username)
+    }
     res.send(response);
   } catch (err) {
     res.send({
@@ -85,8 +81,7 @@ async function get_profile_by_username(req, res) {
 }
 
 module.exports = {
-  homepage,
-  search,
-  get_profile,
-  get_profile_by_username
+  get_homepage,
+  perform_search,
+  get_user_profile
 };
