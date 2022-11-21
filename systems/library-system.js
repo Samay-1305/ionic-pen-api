@@ -3,7 +3,7 @@ const db = require("../models/IonicPenDB");
 async function get_all_books(req, res) {
   let auth_key = req.headers["auth-key"];
   try {
-    let books = db.getAllBooks();
+    let books = await db.getAllBooks();
     res.send({ books: books });
   } catch (err) {
     res.send({
