@@ -45,6 +45,8 @@ app.put("/api/bookmark/set/", library.set_bookmark);
 
 app.post("/api/books/new/", library.create_new_book);
 
+app.post("/api/books/edit", library.edit_book_info);
+
 app.post("/api/books/new/chapter/", library.create_new_chapter);
 
 app.patch("/api/books/publish/:book_id/", library.publish_book);

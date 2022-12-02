@@ -1,4 +1,5 @@
 const db = require("../models/IonicPenDB");
+const fs = require("fs");
 
 async function get_all_books(req, res) {
   let auth_key = req.headers["auth-key"];
@@ -93,6 +94,41 @@ async function create_new_book(req, res) {
       synopsis,
       cover_image
     );
+    res.send({
+      book_id: book_id,
+    });
+  } catch (err) {
+    res.send({
+      error: err.message,
+    });
+  }
+}
+
+async function edit_book_info(req, res) {
+  let auth_key = req.headers["auth-key"];
+  let book_id = req.body.book_id;
+  let book_title = req.body.book_title;
+  let synopsis = req.body.synopsis;
+  let cover_image = req.body.f; //.cover_image;
+  console.log(Object.keys(req.body));
+  book_id = "hello";
+  try {
+    console.log(`${book_id}.png`);
+    console.log(cover_image);
+    fs.writeFile(
+      `/Users/sam/Desktop/Cal Poly/csc307/ionic-pen-app/ionic-pen-api/${book_id}.jpeg`,
+      cover_image,
+      { flag: "w" },
+      (err) => {
+        console.log(err);
+      }
+    );
+    // let book_id = await db.createNewBook(
+    //   auth_key,
+    //   book_title,
+    //   synopsis,
+    //   cover_image
+    // );
     res.send({
       book_id: book_id,
     });
@@ -203,6 +239,7 @@ module.exports = {
   set_bookmark,
   create_new_book,
   create_new_chapter,
+  edit_book_info,
   publish_book,
   unpublish_book,
   get_all_books,
