@@ -244,21 +244,30 @@ test("deleteBookFromDatabase -- success", async () => {
     .toBeUndefined;
 });
 
-// test("", () => {
-//     expect(getAllBooks("", "")).toBe("");
-// });
-// test("", () => {
-//     expect(publishExistingBook("", "")).toBe("");
-// });
-// test("", () => {
-//     expect(unpublishExistingBook("", "")).toBe("");
-// });
-// test("", () => {
-//     expect(createNewBook("", "")).toBe("");
-// });
-// test("", () => {
-//     expect(createNewChapter("", "")).toBe("");
-// });
+test("getAllBooks -- success", async () => {
+  let result = await getAllBooks();
+  expect(result).toBeDefined();
+  expect(result.length).toBeGreaterThan(0);
+});
+
+test("unpublishExistingBook -- success", async () => {
+  expect(await unpublishExistingBook(validAuthKey, validBookId)).toBeUndefined();
+});
+
+test("publishExistingBook -- success", async () => {
+  expect(await publishExistingBook(validAuthKey, validBookId)).toBeUndefined();
+});
+
+
+test("createNewBook -- success", async () => {
+  let result = await createNewBook(validAuthKey, "New book", "A new book", "");
+  expect(result).toBeDefined();
+});
+
+test("createNewChapter -- success", async () => {
+  let result = await createNewChapter(validAuthKey, validBookId, "New Chapter", "Something new");
+    expect(result).toBeUndefined();
+});
 
 afterAll(async () => {
   await conn.dropDatabase();
