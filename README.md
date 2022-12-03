@@ -20,6 +20,9 @@ npm run dev
 
 npm run test
 
+We have a super short demo on the front-end repo called ionic-demo.mp4. But the best demo is to try it out! 
+https://github.com/chrisfishbob/ionic-pen/blob/main/ionic-demo.mp4
+
 ## API Routes:
 
 [GET] `/api/` => Test API route.
