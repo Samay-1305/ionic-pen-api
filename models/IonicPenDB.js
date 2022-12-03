@@ -23,12 +23,6 @@ function setDatabaseConnection(connection) {
 }
 
 function getDatabaseConnection() {
-  if (!dbConnection) {
-    dbConnection = mongoose.createConnection(DATABASE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  }
   return dbConnection;
 }
 
@@ -250,14 +244,12 @@ async function deleteBookFromDatabase(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
-  let book = getEBook(book_id);
+  let profile = await getUserProfileFromAuthKey(auth_key);
+  let book = await getEBook(book_id);
   let del_ind = -1;
   if (book.author === profile.username) {
-    del_ind = profile.works;
-    if (del_ind > -1) {
-      profile.works.splice(del_ind, 1);
-    }
+    del_ind = profile.works.indexOf(book_id);
+    profile.works.splice(del_ind, 1);
     await UserProfileModel.findOneAndUpdate(
       {
         username: profile.username,
@@ -280,8 +272,8 @@ async function getAllBooks() {
 async function publishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
-  let book = getEBook(book_id);
+  let profile = await getUserProfileFromAuthKey(auth_key);
+  let book = await getEBook(book_id);
   if (book.author === profile.username) {
     await EBookModel.findOneAndUpdate(
       {
@@ -297,8 +289,8 @@ async function publishExistingBook(auth_key, book_id) {
 async function unpublishExistingBook(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
-  let profile = getUserProfileFromAuthKey(auth_key);
-  let book = getEBook(book_id);
+  let profile = await getUserProfileFromAuthKey(auth_key);
+  let book = await getEBook(book_id);
   if (book.author === profile.username) {
     await EBookModel.findOneAndUpdate(
       {
@@ -371,6 +363,7 @@ async function createNewChapter(auth_key, book_id, title, contents) {
 }
 
 module.exports = {
+  getDatabaseConnection,
   setDatabaseConnection,
   getAuthKeyFromCredentials,
   getUserProfileFromAuthKey,
