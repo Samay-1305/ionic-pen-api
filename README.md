@@ -6,7 +6,7 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 
 ### First Time Setup
 
-npm ci 
+npm ci
 
 ### Run the application
 
