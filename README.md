@@ -12,11 +12,11 @@ npm ci
 
 npm run start
 
-### Run the application for testing
+### Run the application for development
 
 npm run dev
 
-### Run the application test cases
+### Test the application using jest and prettier
 
 npm run test
 
