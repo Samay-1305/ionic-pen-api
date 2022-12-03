@@ -3,6 +3,7 @@
 REST API written in express.js with a MongoDB Database for the IonicPen application.
 
 ## API Running instructions
+
 npm ci && npm run dev
 
 ## API Routes:
@@ -17,27 +18,35 @@ npm ci && npm run dev
 <br/>
 [GET] `/api/search/` => Search for keywords in Users and Books.
 <br/>
-[GET] `/api/books/:id/` => Retrieve a specific books information.
+[GET] `/api/profile/` => Get a users profile
 <br/>
-[POST] `/api/books/new/` => Create a new book.
+[GET] `/api/books/` => Get all the books published on the platform.
 <br/>
-[POST] `/api/books/new/chapter/` => Creates a new chapter for a book.
+[POST] `/api/books/:id` => Get a specifc books details.
 <br/>
 [DELETE] `/api/books/:id/` => Delete a book.
 <br/>
-[POST] `/api/books/:id/publish/` => Publish a book.
+[DELETE] `/api/books/read/:chapter_id/` => Read a book's chapter.
 <br/>
-[POST] `/api/books/:id/unpublish/` => Unpublish a book.
+[GET] `/api/bookmark/get/:book_id/` => Get a users last position in a book.
 <br/>
-[GET] `/api/books/read/:id/` => Read a book based on the last saved position.
+[PUT] `/api/bookmark/set/` => Set a users position in a book.
+<br/>
+[POST] `/api/books/new/` => Create a new book.
+<br/>
+[POST] `/api/books/new/chapter/:id/` => Create a new book chapter.
 <br/>
 [GET] `/api/books/read/:id/next/` => Read the next chapter of a book.
+<br/>
+[PATCH] `/api/books/publish/:book_id/` => Publish a book.
+<br/>
+[PATCH] `/api/books/unpublish/:book_id/` => Unpublish a book.
 <br/>
 [GET] `/api/library/` => Get all the books in a users library.
 <br/>
 [POST] `/api/library/add/` => Add a new book to a users library.
 <br/>
-[DELETE] `/api/library/remove/:id/` => Remove a book from a users library.
+[PATCH] `/api/library/remove/:id/` => Remove a book from a users library.
 
 ## Database Models:
 
@@ -52,6 +61,12 @@ chapters: [EBookChapter.chapter_id]
 author: UserProfile.username
 <br/>
 synopsis: String
+<br/>
+categories: [String]
+<br/>
+age: String
+<br/>
+wordcount: String
 <br/>
 cover_image: String
 <br/>
@@ -109,5 +124,5 @@ chapter_id: EBookChapter.chapter_id
 <br/>
 username: UserProfile.username
 <br/>
-char_position: Number
+char_index: Number
 <br/>

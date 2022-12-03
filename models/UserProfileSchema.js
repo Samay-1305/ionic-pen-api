@@ -23,9 +23,6 @@ const UserProfileSchema = mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      validate(value) {
-        if (value.length < 5) throw new Error("Invalid email address.");
-      },
     },
     profile_image: {
       data: Buffer,

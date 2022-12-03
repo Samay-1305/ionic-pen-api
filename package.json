@@ -3,6 +3,7 @@
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "mongodb-memory-server": "^8.10.1",
     "mongoose": "^6.6.7",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
@@ -15,7 +16,7 @@
   "scripts": {
     "dev": "prettier --write . && nodemon api-router.js",
     "start": "node api-router.js",
-    "test": "prettier --check ."
+    "test": "prettier --check . && jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/Samay-1305/ionic-pen-api/issues"
   },
-  "homepage": "https://github.com/Samay-1305/ionic-pen-api#readme"
+  "homepage": "https://github.com/Samay-1305/ionic-pen-api#readme",
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
 }

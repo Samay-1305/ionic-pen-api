@@ -18,6 +18,10 @@ const DATABASE_URL = `mongodb+srv://${username}:${password}@${host}/${DATABASE_N
 
 let dbConnection = null;
 
+function setDatabaseConnection(connection) {
+  dbConnection = connection;
+}
+
 function getDatabaseConnection() {
   if (!dbConnection) {
     dbConnection = mongoose.createConnection(DATABASE_URL, {
@@ -137,12 +141,7 @@ async function searchForKeyword(query, auth_key) {
       profile.first_name.toLowerCase().includes(keyWord) ||
       profile.last_name.toLowerCase().includes(keyWord)
     ) {
-      if (
-        profile.public_account ||
-        (user_profile && user_profile.username === profile.username)
-      ) {
-        response.users.push(profile);
-      }
+      response.users.push(profile);
     }
   }
   for (let i = 0; i < ebooks.length; i++) {
@@ -152,12 +151,7 @@ async function searchForKeyword(query, auth_key) {
       ebook.author.toLowerCase().includes(keyWord) ||
       (ebook.synopsis && ebook.synopsis.toLowerCase().includes(keyWord))
     ) {
-      if (
-        ebook.published ||
-        (user_profile && user_profile.username === ebook.author)
-      ) {
-        response.books.push(ebook);
-      }
+      response.books.push(ebook);
     }
   }
   return response;
@@ -238,9 +232,6 @@ async function removeBookFromLibrary(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
   let profile = await getUserProfileFromAuthKey(auth_key);
-  if (!profile) {
-    throw new Error("User not found!");
-  }
   let index = profile.library.indexOf(book_id);
   if (index > -1) {
     profile["library"].splice(index, 1);
@@ -258,6 +249,7 @@ async function removeBookFromLibrary(auth_key, book_id) {
 async function deleteBookFromDatabase(auth_key, book_id) {
   const conn = getDatabaseConnection();
   const EBookModel = conn.model("EBook", EBookSchema);
+  const UserProfileModel = conn.model("UserProfile", UserProfileSchema);
   let profile = getUserProfileFromAuthKey(auth_key);
   let book = getEBook(book_id);
   let del_ind = -1;
@@ -379,6 +371,7 @@ async function createNewChapter(auth_key, book_id, title, contents) {
 }
 
 module.exports = {
+  setDatabaseConnection,
   getAuthKeyFromCredentials,
   getUserProfileFromAuthKey,
   getUserProfileFromUsername,

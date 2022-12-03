@@ -13,10 +13,6 @@ const UserAccountSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: false,
-      // Password is now a hash, not a plain text password.
-      // validate(value) {
-      //   if (value.length < 8) throw new Error("Invalid password length.");
-      // },
     },
     auth_key: {
       type: String,
