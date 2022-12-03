@@ -4,19 +4,19 @@ REST API written in express.js with a MongoDB Database for the IonicPen applicat
 
 ## API Running instructions
 
-# First Time Setup
+### First Time Setup
 
 npm ci 
 
-# Run the application
+### Run the application
 
 npm run start
 
-# Run the application for testing
+### Run the application for testing
 
 npm run dev
 
-# Run the application test cases
+### Run the application test cases
 
 npm run test
 
